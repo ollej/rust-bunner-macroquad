@@ -8,19 +8,26 @@
     clippy::type_complexity
 )]
 
+mod bunner;
+mod drawing;
+mod game;
+mod global_state;
+mod player_state;
 mod resources;
+mod state;
 
 use macroquad::{
     audio::{self, PlaySoundParams},
     prelude::{collections::storage, coroutines::start_coroutine, *},
 };
 
+use global_state::GlobalState;
 use resources::Resources;
 
 use std::error;
 
-pub const WIDTH: i32 = 800;
-pub const HEIGHT: i32 = 480;
+pub const WIDTH: i32 = 480;
+pub const HEIGHT: i32 = 800;
 pub const TITLE: &str = "Bunner Macroquad";
 
 pub const ROW_HEIGHT: i32 = 40;
@@ -28,8 +35,8 @@ pub const ROW_HEIGHT: i32 = 40;
 fn window_conf() -> Conf {
     Conf {
         window_title: TITLE.into(),
-        window_width: WIDTH,
-        window_height: HEIGHT,
+        window_width: WIDTH as i32,
+        window_height: HEIGHT as i32,
         window_resizable: false,
         ..Default::default()
     }
@@ -75,7 +82,12 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
         },
     );
 
+    let mut global_state = GlobalState::new();
+
     loop {
+        global_state.update();
+        global_state.draw();
+
         next_frame().await
     }
 }
