@@ -74,15 +74,8 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
 
     // Start music
     let music = audio::load_sound("resources/music/theme.ogg").await?;
-    audio::play_sound(
-        music,
-        PlaySoundParams {
-            looped: true,
-            volume: 0.3,
-        },
-    );
-
-    let mut global_state = GlobalState::new();
+    let mut global_state = GlobalState::new(music);
+    global_state.init();
 
     loop {
         global_state.update();
