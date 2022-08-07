@@ -12,12 +12,14 @@ mod bunner;
 mod drawing;
 mod game;
 mod global_state;
+mod player_direction;
 mod player_state;
+mod position;
 mod resources;
 mod state;
 
 use macroquad::{
-    audio::{self, PlaySoundParams},
+    audio::{self},
     prelude::{collections::storage, coroutines::start_coroutine, *},
 };
 

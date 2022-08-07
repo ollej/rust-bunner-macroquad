@@ -7,7 +7,7 @@ pub enum PlayerState {
 }
 
 impl Default for PlayerState {
-    fn default() -> PlayerState {
+    fn default() -> Self {
         PlayerState::Alive
     }
 }

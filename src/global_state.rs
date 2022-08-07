@@ -5,6 +5,7 @@ use crate::{
     bunner::Bunner,
     drawing::{display_number, NumberAlign, NumberColor},
     game::Game,
+    position::Position,
     resources::Resources,
     state::State,
     HEIGHT, WIDTH,
@@ -13,7 +14,7 @@ use crate::{
 pub struct GlobalState {
     state: State,
     game: Game,
-    high_score: i32,
+    high_score: u32,
     music: Sound,
 }
 
@@ -44,7 +45,7 @@ impl GlobalState {
                 if is_key_pressed(KeyCode::Space) {
                     // Switch to play state, and create a new Game object, passing it a new Player object to use
                     self.state = State::Play;
-                    self.game = Game::new(Some(Bunner::new()));
+                    self.game = Game::new(Some(Bunner::new(Position::new(240, -320))));
                     set_sound_volume(self.music, 0.3);
                 } else {
                     self.game.update();
@@ -71,7 +72,7 @@ impl GlobalState {
         }
     }
 
-    pub fn draw(&self) {
+    pub fn draw(&mut self) {
         let resources = storage::get::<Resources>();
 
         self.game.draw();
@@ -80,7 +81,8 @@ impl GlobalState {
             State::Menu => {
                 // Draw title screen
                 draw_texture(resources.title_texture, 0., 0., WHITE);
-                let screen = self.game.scroll_pos / 6 % 4;
+                //let screen = (self.game.scroll_pos / 6 % 4) as usize;
+                let screen = 0;
                 draw_texture(
                     resources.start_textures[screen],
                     (WIDTH - 270) as f32 / 2.,

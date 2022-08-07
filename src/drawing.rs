@@ -12,7 +12,7 @@ pub enum NumberColor {
     Yellow,
 }
 
-pub fn display_number(number: i32, color: NumberColor, x: i32, align: NumberAlign) {
+pub fn display_number(number: u32, color: NumberColor, x: i32, align: NumberAlign) {
     let resources = storage::get::<Resources>();
     let n = number.to_string();
     for (i, digit) in n.chars().enumerate() {
