@@ -6,7 +6,7 @@ use std::collections::VecDeque;
 
 use crate::{
     player_direction::PlayerDirection, player_state::PlayerState, position::Position,
-    resources::Resources,
+    resources::Resources, ROW_HEIGHT,
 };
 
 pub struct Bunner {
@@ -130,13 +130,12 @@ impl Bunner {
     }
 
     pub fn draw(&mut self, offset_x: i32, offset_y: i32) {
-        self.x += offset_x;
-        self.y += offset_y;
-
-        draw_texture(self.image, self.x as f32, self.y as f32, WHITE);
-
-        self.x -= offset_x;
-        self.y -= offset_y;
+        draw_texture(
+            self.image,
+            (self.x + offset_x) as f32,
+            (self.y + offset_y - ROW_HEIGHT) as f32,
+            WHITE,
+        );
     }
 
     pub fn handle_input(&mut self, direction: Option<PlayerDirection>) {

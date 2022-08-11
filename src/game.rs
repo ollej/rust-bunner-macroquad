@@ -1,14 +1,17 @@
-use crate::{bunner::Bunner, player_state::PlayerState, resources::Resources, HEIGHT};
+use crate::{
+    bunner::Bunner, grass::Grass, player_state::PlayerState, resources::Resources, HEIGHT,
+    ROW_HEIGHT,
+};
 
 use macroquad::prelude::{clear_background, draw_texture, BLACK, WHITE};
-use macroquad::rand::gen_range;
-use macroquad::{prelude::collections::storage, rand::ChooseRandom};
+use macroquad::{prelude::collections::storage, rand::gen_range, rand::ChooseRandom};
 
 #[derive(Default)]
 pub struct Game {
     pub bunner: Option<Bunner>,
     pub scroll_pos: i32,
     timer: i32,
+    rows: Vec<Grass>,
 }
 
 impl Game {
@@ -17,6 +20,7 @@ impl Game {
             bunner,
             scroll_pos: -HEIGHT,
             timer: 0,
+            rows: vec![Grass::new(None, 0, 0)],
         }
     }
 
@@ -29,15 +33,35 @@ impl Game {
             self.scroll_pos -= 1;
         }
 
+        // Remove rows that have scrolled past the bottom of the screen.
+        let scroll_pos = self.scroll_pos;
+        self.rows
+            .retain(|row| row.y < (scroll_pos + HEIGHT + ROW_HEIGHT + 2));
+
+        // Add rows
+        while let Some(row) = self.rows.last() {
+            if row.y > self.scroll_pos + ROW_HEIGHT {
+                let new_row = row.next();
+                self.rows.push(new_row)
+            } else {
+                break;
+            }
+        }
+
+        for row in self.rows.iter_mut() {
+            row.update();
+        }
         if let Some(bunner) = self.bunner.as_mut() {
             bunner.update();
         }
     }
 
     pub fn draw(&mut self) {
-        let resources = storage::get::<Resources>();
         clear_background(BLACK);
 
+        for row in self.rows.iter() {
+            row.draw(0, -self.scroll_pos);
+        }
         if let Some(bunner) = self.bunner.as_mut() {
             bunner.draw(0, -self.scroll_pos);
         }
