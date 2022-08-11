@@ -1,6 +1,6 @@
 [package]
 authors = ["Olle Wreede <olle@wreede.se>"]
-edition = "2018"
+edition = "2021"
 name = "bunner-macroquad"
 version = "0.1.0"
 

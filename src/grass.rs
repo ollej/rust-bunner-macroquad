@@ -87,7 +87,7 @@ impl Grass {
         };
     }
 
-    fn classify_hedge_segment(
+    pub fn classify_hedge_segment(
         mask_window: &[HedgeMask],
         previous_mid_segment: Option<HedgeTile>,
     ) -> (HedgeTile, Option<HedgeTile>) {
@@ -113,7 +113,7 @@ impl Grass {
         }
     }
 
-    fn first_hedge_row(index: i32) -> (Vec<HedgeMask>, HedgeRow) {
+    pub fn first_hedge_row(index: i32) -> (Vec<HedgeMask>, HedgeRow) {
         if rand::gen_range::<u8>(0, 1) == 0 && index > 7 && index < 14 {
             (Self::generate_hedge_mask(), HedgeRow::First)
         } else {
@@ -121,7 +121,7 @@ impl Grass {
         }
     }
 
-    fn generate_hedge_mask() -> Vec<HedgeMask> {
+    pub fn generate_hedge_mask() -> Vec<HedgeMask> {
         let mut mask = Vec::new();
         mask.resize_with(12, || {
             if rand::gen_range::<u8>(1, 100) > 1 {
@@ -134,24 +134,25 @@ impl Grass {
         mask.insert(rand::gen_range(0, 11), HedgeMask::Empty);
 
         let mut new_mask = Vec::with_capacity(12);
+        debug!("mask: {:?}", mask);
         for i in 0..12 {
             let low_index = 0.max(i as i32 - 1) as usize;
             let high_index = 12.min(i + 1);
             debug!(
-                "i: {} low_index: {} high_index: {} mask: {:?}",
-                i, low_index, high_index, mask
+                "i: {} low_index: {} high_index: {}\nnew_mask: {:?}",
+                i, low_index, high_index, new_mask
             );
             new_mask.push(
-                if &mask[low_index..high_index]
+                if &mask[low_index..=high_index]
                     .iter()
-                    .filter(|&&item| item == HedgeMask::Hedge)
+                    .filter(|&&item| item == HedgeMask::Empty)
                     .collect::<Vec<&HedgeMask>>()
                     .len()
                     > &0
                 {
-                    HedgeMask::Hedge
-                } else {
                     HedgeMask::Empty
+                } else {
+                    HedgeMask::Hedge
                 },
             );
         }

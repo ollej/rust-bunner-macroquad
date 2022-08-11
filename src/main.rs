@@ -8,36 +8,14 @@
     clippy::type_complexity
 )]
 
-mod bunner;
-mod drawing;
-mod game;
-mod global_state;
-mod grass;
-mod hedge;
-mod hedge_mask;
-mod hedge_row;
-mod hedge_tile;
-mod player_direction;
-mod player_state;
-mod position;
-mod resources;
-mod state;
-
 use macroquad::{
     audio::{self},
     prelude::{collections::storage, coroutines::start_coroutine, *},
 };
 
-use global_state::GlobalState;
-use resources::Resources;
+use bunner_macroquad::{global_state::GlobalState, resources::Resources, HEIGHT, TITLE, WIDTH};
 
 use std::error;
-
-pub const WIDTH: i32 = 480;
-pub const HEIGHT: i32 = 800;
-pub const TITLE: &str = "Bunner Macroquad";
-
-pub const ROW_HEIGHT: i32 = 40;
 
 fn window_conf() -> Conf {
     Conf {
