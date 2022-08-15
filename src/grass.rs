@@ -1,66 +1,43 @@
 use crate::{
-    hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow, hedge_tile::HedgeTile,
-    player_state::PlayerState, position::Position, resources::Resources, ROW_HEIGHT, TILE_WIDTH,
-    WIDTH,
+    child_type::ChildType, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
+    hedge_tile::HedgeTile, player_state::PlayerState, position::Position, resources::Resources,
+    row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
 };
+
 use macroquad::audio::play_sound_once;
 use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
 use macroquad::rand;
 
 #[derive(Clone)]
 pub struct Grass {
-    predecessor: Option<Box<Grass>>,
+    predecessor: Option<Box<RowType>>,
     index: i32,
-    pub y: i32,
+    y: i32,
     hedge_row: HedgeRow,
     hedge_mask: Vec<HedgeMask>,
-    pub children: Vec<Hedge>,
+    children: Vec<ChildType>,
 }
 
-impl Grass {
-    pub fn new(predecessor: Option<Grass>, index: i32, y: i32) -> Self {
-        let (hedge_mask, hedge_row) = match predecessor.clone() {
-            None => Self::first_hedge_row(index),
-            Some(p) if p.hedge_row == HedgeRow::None => Self::first_hedge_row(index),
-            Some(p) if p.hedge_row == HedgeRow::First => (p.hedge_mask.clone(), HedgeRow::Second),
-            Some(_) => (Vec::new(), HedgeRow::None),
-        };
-
-        let mut children: Vec<Hedge> = Vec::new();
-        if hedge_row != HedgeRow::None {
-            // See comments in classify_hedge_segment for explanation of previous_mid_segment
-            let mut hedge_tile = HedgeTile::Grass;
-            let mut previous_mid_segment = None;
-            for i in 1..13 {
-                (hedge_tile, previous_mid_segment) =
-                    Self::classify_hedge_segment(&hedge_mask[i - 1..i + 2], previous_mid_segment);
-                if hedge_tile != HedgeTile::Grass {
-                    children.push(Hedge::new(
-                        hedge_tile,
-                        hedge_row,
-                        Position::new(i as i32 * 40 - 20, 0),
-                    ));
-                }
-            }
-        }
-
-        Self {
-            predecessor: predecessor.map(|p| Box::new(p)),
-            y,
-            index,
-            hedge_row,
-            hedge_mask,
-            children,
-        }
+impl Row for Grass {
+    fn y(&self) -> i32 {
+        self.y
     }
 
-    pub fn update(&mut self) {
-        for child in self.children.iter_mut() {
+    fn children(&self) -> &[ChildType] {
+        &self.children
+    }
+
+    fn children_mut(&mut self) -> &mut Vec<ChildType> {
+        self.children.as_mut()
+    }
+
+    fn update(&mut self) {
+        for child in self.children_mut().iter_mut() {
             child.update();
         }
     }
 
-    pub fn draw(&self, offset_x: i32, offset_y: i32) {
+    fn draw(&self, offset_x: i32, offset_y: i32) {
         let x = offset_x;
         let y = self.y + offset_y;
         let image = *storage::get::<Resources>()
@@ -74,35 +51,47 @@ impl Grass {
         }
     }
 
-    pub fn play_sound(&self) {
-        play_sound_once(storage::get::<Resources>().grass_sound);
-    }
-
-    pub fn next(&self) -> Grass {
+    fn next(&self) -> RowType {
         return if self.index <= 5 {
-            Grass::new(Some(self.clone()), self.index + 8, self.y - ROW_HEIGHT)
+            RowType::Grass(Grass::new(
+                Some(Box::new(RowType::Grass(self.clone()))),
+                self.index + 8,
+                self.y - ROW_HEIGHT,
+            ))
         } else if self.index == 6 {
-            Grass::new(Some(self.clone()), 7, self.y - ROW_HEIGHT)
+            RowType::Grass(Grass::new(
+                Some(Box::new(RowType::Grass(self.clone()))),
+                7,
+                self.y - ROW_HEIGHT,
+            ))
         } else if self.index == 7 {
-            Grass::new(Some(self.clone()), 15, self.y - ROW_HEIGHT)
+            RowType::Grass(Grass::new(
+                Some(Box::new(RowType::Grass(self.clone()))),
+                15,
+                self.y - ROW_HEIGHT,
+            ))
         } else if self.index >= 8 && self.index <= 14 {
-            Grass::new(Some(self.clone()), self.index + 1, self.y - ROW_HEIGHT)
+            RowType::Grass(Grass::new(
+                Some(Box::new(RowType::Grass(self.clone()))),
+                self.index + 1,
+                self.y - ROW_HEIGHT,
+            ))
         } else {
-            // TODO: random_choice(Road, Wateer), index 0
-            Grass::new(Some(self.clone()), 0, self.y - ROW_HEIGHT)
+            // TODO: random_choice(Road, Water), index 0
+            RowType::Grass(Grass::new(
+                Some(Box::new(RowType::Grass(self.clone()))),
+                0,
+                self.y - ROW_HEIGHT,
+            ))
         };
     }
 
-    pub fn check_collision(&self, _x: i32) -> PlayerState {
-        PlayerState::Alive
-    }
-
-    pub fn allow_movement(&self, x: i32) -> bool {
+    fn allow_movement(&self, x: i32) -> bool {
         x >= 16 && x <= WIDTH - 16 && !self.collide(x, 8)
     }
 
-    pub fn collide(&self, x: i32, margin: i32) -> bool {
-        for child in self.children.iter() {
+    fn collide(&self, x: i32, margin: i32) -> bool {
+        for child in self.children().iter() {
             if x >= (child.x() - TILE_WIDTH / 2 - margin)
                 && x < (child.x() + TILE_WIDTH / 2 + margin)
             {
@@ -110,6 +99,56 @@ impl Grass {
             }
         }
         false
+    }
+
+    fn push(&self) -> i32 {
+        0
+    }
+}
+
+impl Grass {
+    pub fn new(predecessor: Option<Box<RowType>>, index: i32, y: i32) -> Self {
+        let (hedge_mask, hedge_row) = match predecessor.clone() {
+            None => Self::first_hedge_row(index),
+            Some(row) => match *row {
+                RowType::Grass(p) if p.hedge_row == HedgeRow::None => Self::first_hedge_row(index),
+                RowType::Grass(p) if p.hedge_row == HedgeRow::First => {
+                    (p.hedge_mask.clone(), HedgeRow::Second)
+                }
+                _ => (Vec::new(), HedgeRow::None),
+            },
+        };
+
+        let mut children: Vec<ChildType> = Vec::new();
+        if hedge_row != HedgeRow::None {
+            // See comments in classify_hedge_segment for explanation of previous_mid_segment
+            let mut hedge_tile = HedgeTile::Grass;
+            let mut previous_mid_segment = None;
+            for i in 1..13 {
+                (hedge_tile, previous_mid_segment) =
+                    Self::classify_hedge_segment(&hedge_mask[i - 1..i + 2], previous_mid_segment);
+                if hedge_tile != HedgeTile::Grass {
+                    children.push(ChildType::Hedge(Hedge::new(
+                        hedge_tile,
+                        hedge_row,
+                        Position::new(i as i32 * 40 - 20, 0),
+                    )));
+                }
+            }
+        }
+
+        Self {
+            predecessor: predecessor,
+            y,
+            index,
+            hedge_row,
+            hedge_mask,
+            children,
+        }
+    }
+
+    pub fn play_sound(&self) {
+        play_sound_once(storage::get::<Resources>().grass_sound);
     }
 
     pub fn classify_hedge_segment(

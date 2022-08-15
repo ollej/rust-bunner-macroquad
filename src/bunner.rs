@@ -6,7 +6,7 @@ use std::collections::VecDeque;
 
 use crate::{
     grass::Grass, player_direction::PlayerDirection, player_state::PlayerState, position::Position,
-    resources::Resources, splat::Splat, HEIGHT, ROW_HEIGHT, WIDTH,
+    resources::Resources, row_type::RowType, splat::Splat, HEIGHT, ROW_HEIGHT, WIDTH,
 };
 
 pub struct Bunner {
@@ -36,7 +36,7 @@ impl Bunner {
         }
     }
 
-    pub fn update(&mut self, scroll_pos: i32, rows: &mut Vec<Grass>) {
+    pub fn update(&mut self, scroll_pos: i32, rows: &mut Vec<RowType>) {
         if let Some(direction) = get_last_key_pressed()
             .map(|d| match d {
                 KeyCode::Up => Some(PlayerDirection::Up),
@@ -75,8 +75,8 @@ impl Bunner {
 
                 if let Some(current_row) = rows
                     .iter()
-                    .filter(|row| row.y == self.y)
-                    .collect::<Vec<&Grass>>()
+                    .filter(|row| row.y() == self.y)
+                    .collect::<Vec<&RowType>>()
                     .first()
                 {
                     self.state = current_row.check_collision(self.x);
@@ -164,10 +164,10 @@ impl Bunner {
         );
     }
 
-    pub fn handle_input(&mut self, direction: Option<PlayerDirection>, rows: &[Grass]) {
+    pub fn handle_input(&mut self, direction: Option<PlayerDirection>, rows: &[RowType]) {
         if let Some(direction) = direction {
             for row in rows.iter() {
-                if row.y == self.y + Self::MOVE_DISTANCE * Self::dy(&direction) {
+                if row.y() == self.y + Self::MOVE_DISTANCE * Self::dy(&direction) {
                     if row.allow_movement(self.x + Self::MOVE_DISTANCE * Self::dx(&direction)) {
                         self.direction = direction;
                         self.timer = Bunner::MOVE_DISTANCE;

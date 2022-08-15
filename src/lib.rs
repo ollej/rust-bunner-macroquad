@@ -1,4 +1,6 @@
+pub mod actor;
 pub mod bunner;
+pub mod child_type;
 pub mod drawing;
 pub mod game;
 pub mod global_state;
@@ -11,6 +13,8 @@ pub mod player_direction;
 pub mod player_state;
 pub mod position;
 pub mod resources;
+pub mod row;
+pub mod row_type;
 pub mod splat;
 pub mod state;
 

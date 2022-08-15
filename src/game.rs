@@ -1,6 +1,6 @@
 use crate::{
-    bunner::Bunner, grass::Grass, player_state::PlayerState, resources::Resources, HEIGHT,
-    ROW_HEIGHT,
+    bunner::Bunner, grass::Grass, player_state::PlayerState, resources::Resources,
+    row_type::RowType, HEIGHT, ROW_HEIGHT,
 };
 
 use macroquad::prelude::{clear_background, BLACK};
@@ -9,7 +9,7 @@ use macroquad::prelude::{clear_background, BLACK};
 pub struct Game {
     pub bunner: Option<Bunner>,
     pub scroll_pos: i32,
-    rows: Vec<Grass>,
+    rows: Vec<RowType>,
 }
 
 impl Game {
@@ -17,7 +17,7 @@ impl Game {
         Self {
             bunner,
             scroll_pos: -HEIGHT,
-            rows: vec![Grass::new(None, 0, 0)],
+            rows: vec![RowType::Grass(Grass::new(None, 0, 0))],
         }
     }
 
@@ -33,11 +33,11 @@ impl Game {
         // Remove rows that have scrolled past the bottom of the screen.
         let scroll_pos = self.scroll_pos;
         self.rows
-            .retain(|row| row.y < (scroll_pos + HEIGHT + ROW_HEIGHT + 2));
+            .retain(|row| row.y() < (scroll_pos + HEIGHT + ROW_HEIGHT + 2));
 
         // Add rows
         while let Some(last_row) = self.rows.last() {
-            if last_row.y > self.scroll_pos - ROW_HEIGHT {
+            if last_row.y() > self.scroll_pos - ROW_HEIGHT {
                 let new_row = last_row.next();
                 self.rows.push(new_row)
             } else {
