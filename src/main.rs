@@ -10,7 +10,7 @@
 
 use macroquad::{
     audio::{self},
-    prelude::{collections::storage, coroutines::start_coroutine, *},
+    prelude::{next_frame, Conf},
 };
 
 use bunner_macroquad::{global_state::GlobalState, resources::Resources, HEIGHT, TITLE, WIDTH};
@@ -27,35 +27,9 @@ fn window_conf() -> Conf {
     }
 }
 
-async fn load_resources() -> Result<(), Box<dyn error::Error>> {
-    let resources_loading = start_coroutine(async move {
-        let resources = Resources::new().await.unwrap();
-        storage::store(resources);
-    });
-
-    while !resources_loading.is_done() {
-        clear_background(BLACK);
-        let text = format!(
-            "Loading resources {}",
-            ".".repeat(((get_time() * 2.) as usize) % 4)
-        );
-        draw_text(
-            &text,
-            screen_width() / 2. - 160.,
-            screen_height() / 2.,
-            40.,
-            WHITE,
-        );
-
-        next_frame().await;
-    }
-
-    Ok(())
-}
-
 #[macroquad::main(window_conf())]
 async fn main() -> Result<(), Box<dyn error::Error>> {
-    load_resources().await?;
+    Resources::load().await?;
 
     // Start music
     let music = audio::load_sound("resources/music/theme.ogg").await?;

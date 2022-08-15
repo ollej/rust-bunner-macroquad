@@ -5,7 +5,7 @@ use std::error;
 
 use macroquad::{
     audio::{self, load_sound, Sound},
-    prelude::{load_texture, Texture2D},
+    prelude::{collections::storage, coroutines::start_coroutine, load_texture, Texture2D, *},
 };
 
 // Async blocks are (as of Jun/2021) unstable, so cycles are used where required.
@@ -179,5 +179,31 @@ impl Resources {
             train_sounds,
             zoom_sounds,
         })
+    }
+
+    pub async fn load() -> Result<(), Box<dyn error::Error>> {
+        let resources_loading = start_coroutine(async move {
+            let resources = Resources::new().await.unwrap();
+            storage::store(resources);
+        });
+
+        while !resources_loading.is_done() {
+            clear_background(BLACK);
+            let text = format!(
+                "Loading resources {}",
+                ".".repeat(((get_time() * 2.) as usize) % 4)
+            );
+            draw_text(
+                &text,
+                screen_width() / 2. - 160.,
+                screen_height() / 2.,
+                40.,
+                WHITE,
+            );
+
+            next_frame().await;
+        }
+
+        Ok(())
     }
 }
