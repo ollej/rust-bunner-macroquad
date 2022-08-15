@@ -1,7 +1,7 @@
 use crate::{
     child_type::ChildType, grass::Grass, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
-    hedge_tile::HedgeTile, player_state::PlayerState, position::Position, resources::Resources,
-    row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    hedge_tile::HedgeTile, pavement::Pavement, player_state::PlayerState, position::Position,
+    resources::Resources, row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -58,28 +58,26 @@ impl Row for Road {
         if self.index == 0 {
             RowType::Road(Road::new(predecessor, 1, y))
         } else if self.index < 5 {
-            let random = rand::gen_range(1, 100);
+            let random = rand::gen_range::<u8>(1, 100);
             if random < 80 {
                 RowType::Road(Road::new(predecessor, self.index + 1, y))
             } else if random < 88 {
                 RowType::Grass(Grass::new(predecessor, rand::gen_range(0, 6), y))
             } else if random < 94 {
                 // TODO: Change to Rail
-                RowType::Grass(Grass::new(predecessor, rand::gen_range(0, 6), y))
+                RowType::Grass(Grass::new(predecessor, 0, y))
             } else {
-                // TODO: Change to Pavement
-                RowType::Grass(Grass::new(predecessor, rand::gen_range(0, 6), y))
+                RowType::Pavement(Pavement::new(predecessor, 0, y))
             }
         } else {
-            let random = rand::gen_range(1, 100);
+            let random = rand::gen_range::<u8>(1, 100);
             if random < 60 {
                 RowType::Grass(Grass::new(predecessor, rand::gen_range(0, 6), y))
             } else if random < 90 {
                 // TODO: Change to Rail
-                RowType::Grass(Grass::new(predecessor, rand::gen_range(0, 6), y))
+                RowType::Grass(Grass::new(predecessor, 0, y))
             } else {
-                // TODO: Change to Pavement
-                RowType::Grass(Grass::new(predecessor, rand::gen_range(0, 6), y))
+                RowType::Pavement(Pavement::new(predecessor, 0, y))
             }
         }
     }

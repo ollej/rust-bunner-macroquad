@@ -9,6 +9,7 @@ pub mod hedge;
 pub mod hedge_mask;
 pub mod hedge_row;
 pub mod hedge_tile;
+pub mod pavement;
 pub mod player_direction;
 pub mod player_state;
 pub mod position;

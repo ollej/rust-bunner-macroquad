@@ -29,13 +29,6 @@ pub trait Row {
     }
 
     fn collide(&self, x: i32, margin: i32) -> bool {
-        for child in self.children().iter() {
-            if x >= (child.x() - TILE_WIDTH / 2 - margin)
-                && x < (child.x() + TILE_WIDTH / 2 + margin)
-            {
-                return true;
-            }
-        }
         false
     }
 
