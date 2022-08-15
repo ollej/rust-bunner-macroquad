@@ -39,9 +39,9 @@ impl Game {
             .retain(|row| row.y < (scroll_pos + HEIGHT + ROW_HEIGHT + 2));
 
         // Add rows
-        while let Some(row) = self.rows.last() {
-            if row.y > self.scroll_pos + ROW_HEIGHT {
-                let new_row = row.next();
+        while let Some(last_row) = self.rows.last() {
+            if last_row.y > self.scroll_pos - ROW_HEIGHT {
+                let new_row = last_row.next();
                 self.rows.push(new_row)
             } else {
                 break;
