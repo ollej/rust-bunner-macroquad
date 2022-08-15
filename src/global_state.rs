@@ -1,5 +1,7 @@
 use macroquad::audio::{play_sound, set_sound_volume, PlaySoundParams, Sound};
-use macroquad::prelude::{collections::storage, draw_texture, is_key_pressed, KeyCode, WHITE};
+use macroquad::prelude::{
+    collections::storage, draw_texture, is_key_pressed, rand, KeyCode, WHITE,
+};
 
 use crate::{
     bunner::Bunner,
@@ -30,6 +32,7 @@ impl GlobalState {
     }
 
     pub fn init(&self) {
+        rand::srand(macroquad::miniquad::date::now() as u64);
         play_sound(
             self.music,
             PlaySoundParams {
