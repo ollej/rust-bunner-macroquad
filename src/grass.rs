@@ -36,7 +36,7 @@ impl Grass {
                     children.push(Hedge::new(
                         hedge_tile,
                         hedge_row,
-                        Position::new(i as i32 * 40 - 20, 0),
+                        Position::new(i as i32 * 40 - 40, 0),
                     ));
                 }
             }
