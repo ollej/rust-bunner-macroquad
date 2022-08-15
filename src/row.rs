@@ -16,9 +16,11 @@ pub trait Row {
 
     fn draw(&self, offset_x: i32, offset_y: i32);
 
+    fn play_sound(&self);
+
     fn next(&self) -> RowType;
 
-    fn check_collision(&self, _x: i32) -> PlayerState {
+    fn check_collision(&self, x: i32) -> PlayerState {
         PlayerState::Alive
     }
 

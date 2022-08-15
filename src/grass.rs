@@ -1,7 +1,7 @@
 use crate::{
     child_type::ChildType, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
     hedge_tile::HedgeTile, player_state::PlayerState, position::Position, resources::Resources,
-    row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    road::Road, row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -51,39 +51,25 @@ impl Row for Grass {
         }
     }
 
+    fn play_sound(&self) {
+        play_sound_once(storage::get::<Resources>().grass_sound);
+    }
+
     fn next(&self) -> RowType {
-        return if self.index <= 5 {
-            RowType::Grass(Grass::new(
-                Some(Box::new(RowType::Grass(self.clone()))),
-                self.index + 8,
-                self.y - ROW_HEIGHT,
-            ))
+        let predecessor = Some(Box::new(RowType::Grass(self.clone())));
+        let y = self.y - ROW_HEIGHT;
+        if self.index <= 5 {
+            RowType::Grass(Grass::new(predecessor, self.index + 8, y))
         } else if self.index == 6 {
-            RowType::Grass(Grass::new(
-                Some(Box::new(RowType::Grass(self.clone()))),
-                7,
-                self.y - ROW_HEIGHT,
-            ))
+            RowType::Grass(Grass::new(predecessor, 7, y))
         } else if self.index == 7 {
-            RowType::Grass(Grass::new(
-                Some(Box::new(RowType::Grass(self.clone()))),
-                15,
-                self.y - ROW_HEIGHT,
-            ))
+            RowType::Grass(Grass::new(predecessor, 15, y))
         } else if self.index >= 8 && self.index <= 14 {
-            RowType::Grass(Grass::new(
-                Some(Box::new(RowType::Grass(self.clone()))),
-                self.index + 1,
-                self.y - ROW_HEIGHT,
-            ))
+            RowType::Grass(Grass::new(predecessor, self.index + 1, y))
         } else {
             // TODO: random_choice(Road, Water), index 0
-            RowType::Grass(Grass::new(
-                Some(Box::new(RowType::Grass(self.clone()))),
-                0,
-                self.y - ROW_HEIGHT,
-            ))
-        };
+            RowType::Road(Road::new(predecessor, 0, y))
+        }
     }
 
     fn allow_movement(&self, x: i32) -> bool {
@@ -145,10 +131,6 @@ impl Grass {
             hedge_mask,
             children,
         }
-    }
-
-    pub fn play_sound(&self) {
-        play_sound_once(storage::get::<Resources>().grass_sound);
     }
 
     pub fn classify_hedge_segment(

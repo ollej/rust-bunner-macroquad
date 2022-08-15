@@ -13,6 +13,7 @@ pub mod player_direction;
 pub mod player_state;
 pub mod position;
 pub mod resources;
+pub mod road;
 pub mod row;
 pub mod row_type;
 pub mod splat;
