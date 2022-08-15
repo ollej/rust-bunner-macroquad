@@ -5,8 +5,8 @@ use macroquad::prelude::{
 use std::collections::VecDeque;
 
 use crate::{
-    player_direction::PlayerDirection, player_state::PlayerState, position::Position,
-    resources::Resources, ROW_HEIGHT,
+    grass::Grass, player_direction::PlayerDirection, player_state::PlayerState, position::Position,
+    resources::Resources, splat::Splat, HEIGHT, ROW_HEIGHT, WIDTH,
 };
 
 pub struct Bunner {
@@ -36,7 +36,7 @@ impl Bunner {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, scroll_pos: i32, rows: &mut Vec<Grass>) {
         if let Some(direction) = get_last_key_pressed()
             .map(|d| match d {
                 KeyCode::Up => Some(PlayerDirection::Up),
@@ -60,28 +60,54 @@ impl Bunner {
                 if self.timer == 0 {
                     // Take the next input off the queue and process it
                     let direction = self.input_queue.pop_front();
-                    self.handle_input(direction);
+                    self.handle_input(direction, rows);
                 }
 
                 let mut land = false;
                 if self.timer > 0 {
                     // Apply movement
-                    self.x += match &self.direction {
-                        PlayerDirection::Up => 0,
-                        PlayerDirection::Right => 4,
-                        PlayerDirection::Down => 0,
-                        PlayerDirection::Left => -4,
-                    };
-                    self.y += match &self.direction {
-                        PlayerDirection::Up => -4,
-                        PlayerDirection::Right => 0,
-                        PlayerDirection::Down => 4,
-                        PlayerDirection::Left => 0,
-                    };
+                    self.x += Self::dx(&self.direction);
+                    self.y += Self::dy(&self.direction);
                     self.timer -= 1;
                     // If timer reaches zero, we've just landed
                     land = self.timer == 0;
                 }
+
+                if let Some(current_row) = rows
+                    .iter()
+                    .filter(|row| row.y == self.y)
+                    .collect::<Vec<&Grass>>()
+                    .first()
+                {
+                    self.state = current_row.check_collision(self.x);
+                    match self.state {
+                        PlayerState::Alive => {
+                            //self.x += current_row.push_bunner();
+                            if land {
+                                current_row.play_sound();
+                            }
+                        }
+                        PlayerState::Splat(y_offset) => {
+                            self.timer = 100;
+                            // TODO: Add splat
+                            //current_row
+                            //    .children
+                            //    .push(Splat::new(self.direction, Position::new(self.x, y_offset)));
+                        }
+                        _ => self.timer = 100,
+                    }
+                } else {
+                    if self.y > scroll_pos + HEIGHT + 40 {
+                        // TODO: add eagle
+                        //game.eagle = Eagle((self.x, game.scroll_pos))
+                        self.state = PlayerState::Eagle;
+                        self.timer = 150;
+                        play_sound_once(storage::get::<Resources>().eagle_sound);
+                    }
+                }
+
+                // Limit x position
+                self.x = 16.max((WIDTH - 16).min(self.x));
             }
             _ => {
                 // Not alive - timer now counts down prior to game over screen
@@ -129,20 +155,45 @@ impl Bunner {
         };
     }
 
-    pub fn draw(&mut self, offset_x: i32, offset_y: i32) {
+    pub fn draw(&self, offset_x: i32, offset_y: i32) {
         draw_texture(
             self.image,
-            (self.x + offset_x) as f32,
+            (self.x - 30 + offset_x) as f32,
             (self.y + offset_y - ROW_HEIGHT) as f32,
             WHITE,
         );
     }
 
-    pub fn handle_input(&mut self, direction: Option<PlayerDirection>) {
+    pub fn handle_input(&mut self, direction: Option<PlayerDirection>, rows: &[Grass]) {
         if let Some(direction) = direction {
-            self.direction = direction;
-            self.timer = Bunner::MOVE_DISTANCE;
-            play_sound_once(storage::get::<Resources>().jump_sound);
+            for row in rows.iter() {
+                if row.y == self.y + Self::MOVE_DISTANCE * Self::dy(&direction) {
+                    if row.allow_movement(self.x + Self::MOVE_DISTANCE * Self::dx(&direction)) {
+                        self.direction = direction;
+                        self.timer = Bunner::MOVE_DISTANCE;
+                        play_sound_once(storage::get::<Resources>().jump_sound);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    fn dx(direction: &PlayerDirection) -> i32 {
+        match direction {
+            PlayerDirection::Up => 0,
+            PlayerDirection::Right => 4,
+            PlayerDirection::Down => 0,
+            PlayerDirection::Left => -4,
+        }
+    }
+
+    fn dy(direction: &PlayerDirection) -> i32 {
+        match direction {
+            PlayerDirection::Up => -4,
+            PlayerDirection::Right => 0,
+            PlayerDirection::Down => 4,
+            PlayerDirection::Left => 0,
         }
     }
 }

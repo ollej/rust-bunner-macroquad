@@ -3,14 +3,12 @@ use crate::{
     ROW_HEIGHT,
 };
 
-use macroquad::prelude::{clear_background, draw_texture, BLACK, WHITE};
-use macroquad::{prelude::collections::storage, rand::gen_range, rand::ChooseRandom};
+use macroquad::prelude::{clear_background, BLACK};
 
 #[derive(Default)]
 pub struct Game {
     pub bunner: Option<Bunner>,
     pub scroll_pos: i32,
-    timer: i32,
     rows: Vec<Grass>,
 }
 
@@ -19,7 +17,6 @@ impl Game {
         Self {
             bunner,
             scroll_pos: -HEIGHT,
-            timer: 0,
             rows: vec![Grass::new(None, 0, 0)],
         }
     }
@@ -52,7 +49,7 @@ impl Game {
             row.update();
         }
         if let Some(bunner) = self.bunner.as_mut() {
-            bunner.update();
+            bunner.update(self.scroll_pos, &mut self.rows);
         }
     }
 

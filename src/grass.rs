@@ -1,8 +1,10 @@
 use crate::{
     hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow, hedge_tile::HedgeTile,
-    position::Position, resources::Resources, ROW_HEIGHT,
+    player_state::PlayerState, position::Position, resources::Resources, ROW_HEIGHT, TILE_WIDTH,
+    WIDTH,
 };
-use macroquad::prelude::{collections::storage, debug, draw_texture, Texture2D, WHITE};
+use macroquad::audio::play_sound_once;
+use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
 use macroquad::rand;
 
 #[derive(Clone)]
@@ -12,7 +14,7 @@ pub struct Grass {
     pub y: i32,
     hedge_row: HedgeRow,
     hedge_mask: Vec<HedgeMask>,
-    children: Vec<Hedge>,
+    pub children: Vec<Hedge>,
 }
 
 impl Grass {
@@ -36,7 +38,7 @@ impl Grass {
                     children.push(Hedge::new(
                         hedge_tile,
                         hedge_row,
-                        Position::new(i as i32 * 40 - 40, 0),
+                        Position::new(i as i32 * 40 - 20, 0),
                     ));
                 }
             }
@@ -72,6 +74,10 @@ impl Grass {
         }
     }
 
+    pub fn play_sound(&self) {
+        play_sound_once(storage::get::<Resources>().grass_sound);
+    }
+
     pub fn next(&self) -> Grass {
         return if self.index <= 5 {
             Grass::new(Some(self.clone()), self.index + 8, self.y - ROW_HEIGHT)
@@ -85,6 +91,25 @@ impl Grass {
             // TODO: random_choice(Road, Wateer), index 0
             Grass::new(Some(self.clone()), 0, self.y - ROW_HEIGHT)
         };
+    }
+
+    pub fn check_collision(&self, _x: i32) -> PlayerState {
+        PlayerState::Alive
+    }
+
+    pub fn allow_movement(&self, x: i32) -> bool {
+        x >= 16 && x <= WIDTH - 16 && !self.collide(x, 8)
+    }
+
+    pub fn collide(&self, x: i32, margin: i32) -> bool {
+        for child in self.children.iter() {
+            if x >= (child.x() - TILE_WIDTH / 2 - margin)
+                && x < (child.x() + TILE_WIDTH / 2 + margin)
+            {
+                return true;
+            }
+        }
+        false
     }
 
     pub fn classify_hedge_segment(
@@ -134,14 +159,14 @@ impl Grass {
         mask.insert(rand::gen_range(0, 11), HedgeMask::Empty);
 
         let mut new_mask = Vec::with_capacity(12);
-        debug!("mask: {:?}", mask);
+        //debug!("mask: {:?}", mask);
         for i in 0..12 {
             let low_index = 0.max(i as i32 - 1) as usize;
             let high_index = 12.min(i + 1);
-            debug!(
-                "i: {} low_index: {} high_index: {}\nnew_mask: {:?}",
-                i, low_index, high_index, new_mask
-            );
+            //debug!(
+            //    "i: {} low_index: {} high_index: {}\nnew_mask: {:?}",
+            //    i, low_index, high_index, new_mask
+            //);
             new_mask.push(
                 if &mask[low_index..=high_index]
                     .iter()

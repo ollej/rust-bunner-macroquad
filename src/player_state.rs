@@ -1,7 +1,7 @@
 #[derive(Clone, Copy, PartialEq)]
 pub enum PlayerState {
     Alive,
-    Splat,
+    Splat(i32),
     Splash,
     Eagle,
 }
