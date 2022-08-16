@@ -1,6 +1,6 @@
 use crate::{
     actor::Actor, hedge_row::HedgeRow, hedge_tile::HedgeTile, position::Position,
-    resources::Resources,
+    resources::Resources, TILE_WIDTH,
 };
 use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 
@@ -15,7 +15,7 @@ impl Actor for Hedge {
     fn update(&mut self) {}
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
-        let x = self.position.x + offset_x - 20;
+        let x = self.position.x + offset_x - TILE_WIDTH / 2;
         let y = self.position.y + offset_y;
         let image = *storage::get::<Resources>()
             .bush_textures

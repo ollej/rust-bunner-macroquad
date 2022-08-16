@@ -1,5 +1,6 @@
 use bunner_macroquad::grass::Grass;
 use bunner_macroquad::hedge_mask::HedgeMask;
+use macroquad::rand::gen_range;
 use macroquad::rand::srand;
 
 #[test]

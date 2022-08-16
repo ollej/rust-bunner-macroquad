@@ -33,11 +33,11 @@ impl Game {
         // Remove rows that have scrolled past the bottom of the screen.
         let scroll_pos = self.scroll_pos;
         self.rows
-            .retain(|row| row.y() < (scroll_pos + HEIGHT + ROW_HEIGHT + 2));
+            .retain(|row| row.y() < (scroll_pos + HEIGHT + ROW_HEIGHT * 2));
 
         // Add rows
         while let Some(last_row) = self.rows.last() {
-            if last_row.y() > self.scroll_pos - ROW_HEIGHT {
+            if last_row.y() > self.scroll_pos + ROW_HEIGHT {
                 let new_row = last_row.next();
                 self.rows.push(new_row)
             } else {
@@ -51,12 +51,14 @@ impl Game {
         if let Some(bunner) = self.bunner.as_mut() {
             bunner.update(self.scroll_pos, &mut self.rows);
         }
+
+        // TODO: Play river/traffic sounds
     }
 
     pub fn draw(&mut self) {
         clear_background(BLACK);
 
-        for row in self.rows.iter() {
+        for row in self.rows.iter().rev() {
             row.draw(0, -self.scroll_pos);
         }
         if let Some(bunner) = self.bunner.as_mut() {

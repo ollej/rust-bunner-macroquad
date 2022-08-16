@@ -5,8 +5,8 @@ use macroquad::prelude::{
 use std::collections::VecDeque;
 
 use crate::{
-    grass::Grass, player_direction::PlayerDirection, player_state::PlayerState, position::Position,
-    resources::Resources, row_type::RowType, splat::Splat, HEIGHT, ROW_HEIGHT, WIDTH,
+    player_direction::PlayerDirection, player_state::PlayerState, position::Position,
+    resources::Resources, row_type::RowType, HEIGHT, ROW_HEIGHT, WIDTH,
 };
 
 pub struct Bunner {
@@ -156,12 +156,9 @@ impl Bunner {
     }
 
     pub fn draw(&self, offset_x: i32, offset_y: i32) {
-        draw_texture(
-            self.image,
-            (self.x - 30 + offset_x) as f32,
-            (self.y + offset_y - ROW_HEIGHT) as f32,
-            WHITE,
-        );
+        let x = (self.x - 30 + offset_x) as f32;
+        let y = (self.y + offset_y - ROW_HEIGHT) as f32;
+        draw_texture(self.image, x, y, WHITE);
     }
 
     pub fn handle_input(&mut self, direction: Option<PlayerDirection>, rows: &[RowType]) {

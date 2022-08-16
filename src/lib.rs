@@ -1,6 +1,7 @@
 pub mod actor;
 pub mod bunner;
 pub mod child_type;
+pub mod dirt;
 pub mod drawing;
 pub mod game;
 pub mod global_state;
@@ -13,12 +14,14 @@ pub mod pavement;
 pub mod player_direction;
 pub mod player_state;
 pub mod position;
+pub mod rail;
 pub mod resources;
 pub mod road;
 pub mod row;
 pub mod row_type;
 pub mod splat;
 pub mod state;
+pub mod water;
 
 pub const WIDTH: i32 = 480;
 pub const HEIGHT: i32 = 800;

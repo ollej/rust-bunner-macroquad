@@ -1,7 +1,6 @@
 use crate::{
-    child_type::ChildType, grass::Grass, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
-    hedge_tile::HedgeTile, player_state::PlayerState, position::Position, resources::Resources,
-    road::Road, row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    child_type::ChildType, resources::Resources, road::Road, row::Row, row_type::RowType,
+    water::Water, ROW_HEIGHT,
 };
 
 use macroquad::audio::play_sound_once;
@@ -9,14 +8,14 @@ use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
 use macroquad::rand;
 
 #[derive(Clone)]
-pub struct Pavement {
+pub struct Dirt {
     predecessor: Option<Box<RowType>>,
     index: i32,
     y: i32,
     children: Vec<ChildType>,
 }
 
-impl Row for Pavement {
+impl Row for Dirt {
     fn y(&self) -> i32 {
         self.y
     }
@@ -29,14 +28,11 @@ impl Row for Pavement {
         self.children.as_mut()
     }
 
-    fn update(&mut self) {
-        // TODO: super update
-        // TODO: Trigger sound effects
-    }
+    fn update(&mut self) {}
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
         let image = *storage::get::<Resources>()
-            .side_textures
+            .dirt_textures
             .get(self.index as usize)
             .unwrap();
         let x = offset_x;
@@ -45,21 +41,31 @@ impl Row for Pavement {
     }
 
     fn play_sound(&self) {
-        play_sound_once(storage::get::<Resources>().sidewalk_sound);
+        play_sound_once(storage::get::<Resources>().dirt_sound);
     }
 
     fn next(&self) -> RowType {
-        let predecessor = Some(Box::new(RowType::Pavement(self.clone())));
+        let predecessor = Some(Box::new(RowType::Dirt(self.clone())));
         let y = self.y - ROW_HEIGHT;
-        if self.index < 2 {
-            RowType::Pavement(Pavement::new(predecessor, self.index + 1, y))
+        if self.index <= 5 {
+            RowType::Dirt(Dirt::new(predecessor, self.index + 8, y))
+        } else if self.index == 6 {
+            RowType::Dirt(Dirt::new(predecessor, 7, y))
+        } else if self.index == 7 {
+            RowType::Dirt(Dirt::new(predecessor, 15, y))
+        } else if self.index >= 8 && self.index <= 14 {
+            RowType::Dirt(Dirt::new(predecessor, self.index + 1, y))
         } else {
-            RowType::Road(Road::new(predecessor, 0, y))
+            if rand::gen_range::<u8>(0, 2) == 1 {
+                RowType::Road(Road::new(predecessor, 0, y))
+            } else {
+                RowType::Water(Water::new(predecessor, 0, y))
+            }
         }
     }
 }
 
-impl Pavement {
+impl Dirt {
     pub fn new(predecessor: Option<Box<RowType>>, index: i32, y: i32) -> Self {
         Self {
             predecessor,

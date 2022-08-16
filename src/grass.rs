@@ -1,7 +1,7 @@
 use crate::{
     child_type::ChildType, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
     hedge_tile::HedgeTile, player_state::PlayerState, position::Position, resources::Resources,
-    road::Road, row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    road::Road, row::Row, row_type::RowType, water::Water, ROW_HEIGHT, TILE_WIDTH, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -38,13 +38,13 @@ impl Row for Grass {
     }
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
-        let x = offset_x;
-        let y = self.y + offset_y;
         let image = *storage::get::<Resources>()
             .grass_textures
             .get(self.index as usize)
             .unwrap();
-        draw_texture(image, x as f32, (y - ROW_HEIGHT) as f32, WHITE);
+        let x = offset_x;
+        let y = self.y + offset_y - image.height() as i32;
+        draw_texture(image, x as f32, y as f32, WHITE);
 
         for child in &self.children {
             child.draw(x, y);
@@ -67,8 +67,11 @@ impl Row for Grass {
         } else if self.index >= 8 && self.index <= 14 {
             RowType::Grass(Grass::new(predecessor, self.index + 1, y))
         } else {
-            // TODO: random_choice(Road, Water), index 0
-            RowType::Road(Road::new(predecessor, 0, y))
+            if rand::gen_range::<u8>(0, 2) == 0 {
+                RowType::Road(Road::new(predecessor, 0, y))
+            } else {
+                RowType::Water(Water::new(predecessor, 0, y))
+            }
         }
     }
 

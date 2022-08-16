@@ -17,7 +17,8 @@ async fn load_textures_list(
     let mut textures = vec![];
 
     for i in 0..number {
-        textures.push(load_texture(&format!("resources/images/{}{}.png", name_prefix, i)).await?);
+        let path = &format!("resources/images/{}{}.png", name_prefix, i);
+        textures.push(load_texture(path).await?);
     }
 
     Ok(textures)
