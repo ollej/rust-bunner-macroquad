@@ -3,19 +3,24 @@ use crate::{
     ROW_HEIGHT,
 };
 use macroquad::prelude::{collections::storage, draw_texture, WHITE};
+use macroquad::rand::ChooseRandom;
 
-pub struct Splat {
-    direction: PlayerDirection,
+#[derive(Clone)]
+pub struct Train {
+    dx: i32,
     position: Position,
+    image_index: usize,
 }
 
-impl Actor for Splat {
-    fn update(&mut self) {}
+impl Actor for Train {
+    fn update(&mut self) {
+        self.position.x += self.dx;
+    }
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
         let image = *storage::get::<Resources>()
-            .splat_textures
-            .get(self.direction as usize)
+            .train_textures
+            .get(self.image_index)
             .unwrap();
         draw_texture(
             image,
@@ -34,15 +39,21 @@ impl Actor for Splat {
     }
 
     fn width(&self) -> i32 {
-        60
+        860
     }
 }
 
-impl Splat {
-    pub fn new(direction: PlayerDirection, position: Position) -> Self {
+impl Train {
+    pub fn new(dx: i32, position: Position) -> Self {
+        let image_index = if dx < 0 {
+            *vec![0, 2, 4].choose().unwrap()
+        } else {
+            *vec![1, 3, 5].choose().unwrap()
+        };
         Self {
-            direction,
+            dx,
             position,
+            image_index,
         }
     }
 }

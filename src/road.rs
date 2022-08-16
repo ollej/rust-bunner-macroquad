@@ -29,7 +29,7 @@ impl Row for Road {
         self.children.as_mut()
     }
 
-    fn update(&mut self) {
+    fn update(&mut self, scroll_pos: i32) {
         // TODO: super update
         // TODO: Trigger sound effects
     }

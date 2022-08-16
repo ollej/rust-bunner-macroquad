@@ -29,7 +29,7 @@ impl Row for Water {
         self.children.as_mut()
     }
 
-    fn update(&mut self) {
+    fn update(&mut self, scroll_pos: i32) {
         // TODO: super update
         // TODO: update logs
     }

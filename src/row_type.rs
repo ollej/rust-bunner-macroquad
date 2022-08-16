@@ -47,6 +47,17 @@ impl RowType {
         }
     }
 
+    pub fn collide(&self, x: i32, margin: i32) -> bool {
+        match self {
+            RowType::Grass(grass) => grass.collide(x, margin),
+            RowType::Road(road) => road.collide(x, margin),
+            RowType::Pavement(pavement) => pavement.collide(x, margin),
+            RowType::Rail(rail) => rail.collide(x, margin),
+            RowType::Water(water) => water.collide(x, margin),
+            RowType::Dirt(dirt) => dirt.collide(x, margin),
+        }
+    }
+
     pub fn play_sound(&self) {
         match self {
             RowType::Grass(grass) => grass.play_sound(),
@@ -69,14 +80,14 @@ impl RowType {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, scroll_pos: i32) {
         match self {
-            RowType::Grass(grass) => grass.update(),
-            RowType::Road(road) => road.update(),
-            RowType::Pavement(pavement) => pavement.update(),
-            RowType::Rail(rail) => rail.update(),
-            RowType::Water(water) => water.update(),
-            RowType::Dirt(dirt) => dirt.update(),
+            RowType::Grass(grass) => grass.update(scroll_pos),
+            RowType::Road(road) => road.update(scroll_pos),
+            RowType::Pavement(pavement) => pavement.update(scroll_pos),
+            RowType::Rail(rail) => rail.update(scroll_pos),
+            RowType::Water(water) => water.update(scroll_pos),
+            RowType::Dirt(dirt) => dirt.update(scroll_pos),
         }
     }
 

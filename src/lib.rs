@@ -22,6 +22,7 @@ pub mod row;
 pub mod row_type;
 pub mod splat;
 pub mod state;
+pub mod train;
 pub mod water;
 
 pub const WIDTH: i32 = 480;

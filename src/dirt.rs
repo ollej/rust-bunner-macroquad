@@ -28,7 +28,7 @@ impl Row for Dirt {
         self.children.as_mut()
     }
 
-    fn update(&mut self) {}
+    fn update(&mut self, scroll_pos: i32) {}
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
         let image = *storage::get::<Resources>()

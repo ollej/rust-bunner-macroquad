@@ -29,11 +29,6 @@ impl Row for Pavement {
         self.children.as_mut()
     }
 
-    fn update(&mut self) {
-        // TODO: super update
-        // TODO: Trigger sound effects
-    }
-
     fn draw(&self, offset_x: i32, offset_y: i32) {
         let image = *storage::get::<Resources>()
             .side_textures

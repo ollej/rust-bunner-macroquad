@@ -48,7 +48,7 @@ impl Game {
         }
 
         for row in self.rows.iter_mut() {
-            row.update();
+            row.update(self.scroll_pos);
         }
         if let Some(bunner) = self.bunner.as_mut() {
             bunner.update(self.scroll_pos, &mut self.rows);

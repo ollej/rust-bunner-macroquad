@@ -31,24 +31,15 @@ impl Row for Grass {
         self.children.as_mut()
     }
 
-    fn update(&mut self) {
-        for child in self.children_mut().iter_mut() {
-            child.update();
-        }
-    }
-
     fn draw(&self, offset_x: i32, offset_y: i32) {
         let image = *storage::get::<Resources>()
             .grass_textures
             .get(self.index as usize)
             .unwrap();
         let x = offset_x;
-        let y = self.y + offset_y - image.height() as i32;
-        draw_texture(image, x as f32, y as f32, WHITE);
-
-        for child in &self.children {
-            child.draw(x, y);
-        }
+        let y = self.y + offset_y as i32;
+        draw_texture(image, x as f32, y as f32 - image.height(), WHITE);
+        self.draw_children(x, y);
     }
 
     fn play_sound(&self) {
@@ -77,17 +68,6 @@ impl Row for Grass {
 
     fn allow_movement(&self, x: i32) -> bool {
         x >= 16 && x <= WIDTH - 16 && !self.collide(x, 8)
-    }
-
-    fn collide(&self, x: i32, margin: i32) -> bool {
-        for child in self.children().iter() {
-            if x >= (child.x() - TILE_WIDTH / 2 - margin)
-                && x < (child.x() + TILE_WIDTH / 2 + margin)
-            {
-                return true;
-            }
-        }
-        false
     }
 
     fn push(&self) -> i32 {

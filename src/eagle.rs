@@ -27,6 +27,10 @@ impl Actor for Eagle {
     fn y(&self) -> i32 {
         self.position.y
     }
+
+    fn width(&self) -> i32 {
+        166
+    }
 }
 
 impl Eagle {
