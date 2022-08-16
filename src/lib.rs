@@ -3,6 +3,7 @@ pub mod bunner;
 pub mod child_type;
 pub mod dirt;
 pub mod drawing;
+pub mod eagle;
 pub mod game;
 pub mod global_state;
 pub mod grass;

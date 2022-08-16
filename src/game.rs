@@ -1,6 +1,6 @@
 use crate::{
-    bunner::Bunner, grass::Grass, player_state::PlayerState, resources::Resources,
-    row_type::RowType, HEIGHT, ROW_HEIGHT,
+    actor::Actor, bunner::Bunner, eagle::Eagle, grass::Grass, player_state::PlayerState,
+    position::Position, row_type::RowType, HEIGHT, ROW_HEIGHT,
 };
 
 use macroquad::prelude::{clear_background, BLACK};
@@ -9,6 +9,7 @@ use macroquad::prelude::{clear_background, BLACK};
 pub struct Game {
     pub bunner: Option<Bunner>,
     pub scroll_pos: i32,
+    eagle: Option<Eagle>,
     rows: Vec<RowType>,
 }
 
@@ -17,6 +18,7 @@ impl Game {
         Self {
             bunner,
             scroll_pos: -HEIGHT,
+            eagle: None,
             rows: vec![RowType::Grass(Grass::new(None, 0, 0))],
         }
     }
@@ -50,6 +52,17 @@ impl Game {
         }
         if let Some(bunner) = self.bunner.as_mut() {
             bunner.update(self.scroll_pos, &mut self.rows);
+            match bunner.state {
+                PlayerState::Eagle(x) => {
+                    if self.eagle.is_none() {
+                        self.eagle = Some(Eagle::new(Position::new(x, self.scroll_pos)));
+                    }
+                }
+                _ => (),
+            };
+        }
+        if let Some(eagle) = self.eagle.as_mut() {
+            eagle.update();
         }
 
         // TODO: Play river/traffic sounds
@@ -61,8 +74,11 @@ impl Game {
         for row in self.rows.iter().rev() {
             row.draw(0, -self.scroll_pos);
         }
-        if let Some(bunner) = self.bunner.as_mut() {
+        if let Some(bunner) = &self.bunner {
             bunner.draw(0, -self.scroll_pos);
+        }
+        if let Some(eagle) = &self.eagle {
+            eagle.draw(0, -self.scroll_pos);
         }
     }
 

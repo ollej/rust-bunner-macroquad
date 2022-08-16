@@ -3,7 +3,7 @@ pub enum PlayerState {
     Alive,
     Splat(i32),
     Splash,
-    Eagle,
+    Eagle(i32),
 }
 
 impl Default for PlayerState {

@@ -6,7 +6,7 @@ use std::collections::VecDeque;
 
 use crate::{
     player_direction::PlayerDirection, player_state::PlayerState, position::Position,
-    resources::Resources, row_type::RowType, HEIGHT, ROW_HEIGHT, WIDTH,
+    resources::Resources, row_type::RowType, HEIGHT, WIDTH,
 };
 
 pub struct Bunner {
@@ -97,10 +97,8 @@ impl Bunner {
                         _ => self.timer = 100,
                     }
                 } else {
-                    if self.y > scroll_pos + HEIGHT + 40 {
-                        // TODO: add eagle
-                        //game.eagle = Eagle((self.x, game.scroll_pos))
-                        self.state = PlayerState::Eagle;
+                    if self.y > scroll_pos + HEIGHT + 80 {
+                        self.state = PlayerState::Eagle(self.x);
                         self.timer = 150;
                         play_sound_once(storage::get::<Resources>().eagle_sound);
                     }
