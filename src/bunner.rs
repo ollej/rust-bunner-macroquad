@@ -156,8 +156,8 @@ impl Bunner {
     }
 
     pub fn draw(&self, offset_x: i32, offset_y: i32) {
-        let x = (self.x - 30 + offset_x) as f32;
-        let y = (self.y + offset_y - ROW_HEIGHT) as f32;
+        let x = (self.x + offset_x) as f32 - self.image.width() / 2.;
+        let y = (self.y + offset_y) as f32 - self.image.height();
         draw_texture(self.image, x, y, WHITE);
     }
 

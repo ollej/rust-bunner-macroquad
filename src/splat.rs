@@ -1,5 +1,6 @@
 use crate::{
-    player_direction::PlayerDirection, position::Position, resources::Resources, ROW_HEIGHT,
+    actor::Actor, player_direction::PlayerDirection, position::Position, resources::Resources,
+    ROW_HEIGHT,
 };
 use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 
@@ -8,17 +9,10 @@ pub struct Splat {
     position: Position,
 }
 
-impl Splat {
-    pub fn new(direction: PlayerDirection, position: Position) -> Self {
-        Self {
-            direction,
-            position,
-        }
-    }
+impl Actor for Splat {
+    fn update(&mut self) {}
 
-    pub fn update(&mut self) {}
-
-    pub fn draw(&self, offset_x: i32, offset_y: i32) {
+    fn draw(&self, offset_x: i32, offset_y: i32) {
         let image = *storage::get::<Resources>()
             .splat_textures
             .get(self.direction as usize)
@@ -29,5 +23,22 @@ impl Splat {
             (self.position.y + offset_y - ROW_HEIGHT) as f32,
             WHITE,
         );
+    }
+
+    fn x(&self) -> i32 {
+        self.position.x
+    }
+
+    fn y(&self) -> i32 {
+        self.position.y
+    }
+}
+
+impl Splat {
+    pub fn new(direction: PlayerDirection, position: Position) -> Self {
+        Self {
+            direction,
+            position,
+        }
     }
 }
