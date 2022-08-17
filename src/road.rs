@@ -1,6 +1,6 @@
 use crate::{
-    actor::Actor, car::SoundIndex, car::TrafficSound, child_type::ChildType, grass::Grass,
-    mover::Mover, pavement::Pavement, player_state::PlayerState, position::Position, rail::Rail,
+    actor::Actor, car::SoundIndex, car::TrafficSound, child::Child, grass::Grass, mover::Mover,
+    pavement::Pavement, player_state::PlayerState, position::Position, rail::Rail,
     resources::Resources, row::Row, ROW_HEIGHT, WIDTH,
 };
 
@@ -14,7 +14,7 @@ pub struct Road {
     previous_dx: i32,
     index: i32,
     y: i32,
-    children: Vec<ChildType>,
+    children: Vec<Child>,
 }
 
 impl Row for Road {
@@ -22,11 +22,11 @@ impl Row for Road {
         self.y
     }
 
-    fn children(&self) -> &[ChildType] {
+    fn children(&self) -> &[Child] {
         &self.children
     }
 
-    fn children_mut(&mut self) -> &mut Vec<ChildType> {
+    fn children_mut(&mut self) -> &mut Vec<Child> {
         self.children.as_mut()
     }
 
@@ -38,7 +38,7 @@ impl Row for Road {
                 if bunner_pos.y == self.y + traffic_sound.y_offset {
                     for child in self.children.iter_mut() {
                         match child {
-                            ChildType::Car(car) => {
+                            Child::Car(car) => {
                                 // The car must be within 100 pixels of the player on the x-axis, and moving towards the player
                                 // child_obj.dx < 0 is True or False depending on whether the car is moving left or right, and
                                 // dx < 0 is True or False depending on whether the player is to the left or right of the car.

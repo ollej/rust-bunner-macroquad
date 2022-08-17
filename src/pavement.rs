@@ -1,4 +1,4 @@
-use crate::{child_type::ChildType, resources::Resources, road::Road, row::Row, ROW_HEIGHT};
+use crate::{child::Child, resources::Resources, road::Road, row::Row, ROW_HEIGHT};
 
 use macroquad::audio::play_sound_once;
 use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
@@ -7,7 +7,7 @@ use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
 pub struct Pavement {
     index: i32,
     y: i32,
-    children: Vec<ChildType>,
+    children: Vec<Child>,
 }
 
 impl Row for Pavement {
@@ -15,11 +15,11 @@ impl Row for Pavement {
         self.y
     }
 
-    fn children(&self) -> &[ChildType] {
+    fn children(&self) -> &[Child] {
         &self.children
     }
 
-    fn children_mut(&mut self) -> &mut Vec<ChildType> {
+    fn children_mut(&mut self) -> &mut Vec<Child> {
         self.children.as_mut()
     }
 

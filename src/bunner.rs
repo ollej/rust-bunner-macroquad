@@ -5,8 +5,8 @@ use macroquad::prelude::{
 use std::collections::VecDeque;
 
 use crate::{
-    child_type::ChildType, player_direction::PlayerDirection, player_state::PlayerState,
-    position::Position, resources::Resources, row::Row, splat::Splat, HEIGHT, WIDTH,
+    child::Child, player_direction::PlayerDirection, player_state::PlayerState, position::Position,
+    resources::Resources, row::Row, splat::Splat, HEIGHT, WIDTH,
 };
 
 pub struct Bunner {
@@ -85,7 +85,7 @@ impl Bunner {
                             self.timer = 100;
                             current_row.children_mut().insert(
                                 0,
-                                ChildType::Splat(Splat::new(
+                                Child::Splat(Splat::new(
                                     self.direction,
                                     Position::new(self.position.x, y_offset),
                                 )),

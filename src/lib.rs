@@ -1,7 +1,7 @@
 pub mod actor;
 pub mod bunner;
 pub mod car;
-pub mod child_type;
+pub mod child;
 pub mod dirt;
 pub mod drawing;
 pub mod eagle;

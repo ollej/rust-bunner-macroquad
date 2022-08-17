@@ -1,6 +1,6 @@
 use crate::{
-    child_type::ChildType, position::Position, resources::Resources, road::Road, row::Row,
-    water::Water, ROW_HEIGHT,
+    child::Child, position::Position, resources::Resources, road::Road, row::Row, water::Water,
+    ROW_HEIGHT,
 };
 
 use macroquad::audio::play_sound_once;
@@ -11,7 +11,7 @@ use macroquad::rand;
 pub struct Dirt {
     index: i32,
     y: i32,
-    children: Vec<ChildType>,
+    children: Vec<Child>,
 }
 
 impl Row for Dirt {
@@ -19,11 +19,11 @@ impl Row for Dirt {
         self.y
     }
 
-    fn children(&self) -> &[ChildType] {
+    fn children(&self) -> &[Child] {
         &self.children
     }
 
-    fn children_mut(&mut self) -> &mut Vec<ChildType> {
+    fn children_mut(&mut self) -> &mut Vec<Child> {
         self.children.as_mut()
     }
 

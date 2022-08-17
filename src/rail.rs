@@ -1,6 +1,6 @@
 use crate::{
-    child_type::ChildType, player_state::PlayerState, position::Position, resources::Resources,
-    road::Road, row::Row, train::Train, water::Water, HEIGHT, ROW_HEIGHT, WIDTH,
+    child::Child, player_state::PlayerState, position::Position, resources::Resources, road::Road,
+    row::Row, train::Train, water::Water, HEIGHT, ROW_HEIGHT, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -12,7 +12,7 @@ use macroquad::rand::ChooseRandom;
 pub struct Rail {
     index: i32,
     y: i32,
-    children: Vec<ChildType>,
+    children: Vec<Child>,
 }
 
 impl Row for Rail {
@@ -20,11 +20,11 @@ impl Row for Rail {
         self.y
     }
 
-    fn children(&self) -> &[ChildType] {
+    fn children(&self) -> &[Child] {
         &self.children
     }
 
-    fn children_mut(&mut self) -> &mut Vec<ChildType> {
+    fn children_mut(&mut self) -> &mut Vec<Child> {
         self.children.as_mut()
     }
 
@@ -43,8 +43,7 @@ impl Row for Rail {
                 } else {
                     Position::new(WIDTH - 1000, 47)
                 };
-                self.children
-                    .push(ChildType::Train(Train::new(dx, position)));
+                self.children.push(Child::Train(Train::new(dx, position)));
                 play_sound_once(storage::get::<Resources>().bell_sound);
                 let train_sound = *storage::get::<Resources>()
                     .train_sounds

@@ -1,6 +1,5 @@
 use crate::{
-    child_type::ChildType, dirt::Dirt, position::Position, resources::Resources, row::Row,
-    ROW_HEIGHT,
+    child::Child, dirt::Dirt, position::Position, resources::Resources, row::Row, ROW_HEIGHT,
 };
 
 use macroquad::audio::play_sound_once;
@@ -13,7 +12,7 @@ pub struct Water {
     previous_dx: i32,
     index: i32,
     y: i32,
-    children: Vec<ChildType>,
+    children: Vec<Child>,
 }
 
 impl Row for Water {
@@ -21,11 +20,11 @@ impl Row for Water {
         self.y
     }
 
-    fn children(&self) -> &[ChildType] {
+    fn children(&self) -> &[Child] {
         &self.children
     }
 
-    fn children_mut(&mut self) -> &mut Vec<ChildType> {
+    fn children_mut(&mut self) -> &mut Vec<Child> {
         self.children.as_mut()
     }
 

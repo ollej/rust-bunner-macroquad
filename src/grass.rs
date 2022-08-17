@@ -1,7 +1,7 @@
 use crate::{
-    child_type::ChildType, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
-    hedge_tile::HedgeTile, player_state::PlayerState, position::Position, resources::Resources,
-    road::Road, row::Row, water::Water, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    child::Child, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow, hedge_tile::HedgeTile,
+    position::Position, resources::Resources, road::Road, row::Row, water::Water, ROW_HEIGHT,
+    WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -14,7 +14,7 @@ pub struct Grass {
     y: i32,
     hedge_row: HedgeRow,
     hedge_mask: Vec<HedgeMask>,
-    children: Vec<ChildType>,
+    children: Vec<Child>,
 }
 
 impl Row for Grass {
@@ -22,11 +22,11 @@ impl Row for Grass {
         self.y
     }
 
-    fn children(&self) -> &[ChildType] {
+    fn children(&self) -> &[Child] {
         &self.children
     }
 
-    fn children_mut(&mut self) -> &mut Vec<ChildType> {
+    fn children_mut(&mut self) -> &mut Vec<Child> {
         self.children.as_mut()
     }
 
@@ -89,7 +89,7 @@ impl Grass {
                 (Vec::new(), HedgeRow::None)
             };
 
-        let mut children: Vec<ChildType> = Vec::new();
+        let mut children: Vec<Child> = Vec::new();
         if hedge_row != HedgeRow::None {
             // See comments in classify_hedge_segment for explanation of previous_mid_segment
             let mut hedge_tile = HedgeTile::Grass;
@@ -98,7 +98,7 @@ impl Grass {
                 (hedge_tile, previous_mid_segment) =
                     Self::classify_hedge_segment(&hedge_mask[i - 1..i + 2], previous_mid_segment);
                 if hedge_tile != HedgeTile::Grass {
-                    children.push(ChildType::Hedge(Hedge::new(
+                    children.push(Child::Hedge(Hedge::new(
                         hedge_tile,
                         hedge_row,
                         Position::new(i as i32 * 40 - 20, 0),
