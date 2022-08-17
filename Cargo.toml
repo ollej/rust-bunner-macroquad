@@ -6,3 +6,12 @@ version = "0.1.0"
 
 [dependencies]
 macroquad = "0.3.15"
+
+[profile.dev.package.'*']
+opt-level = 3
+
+[profile.release]
+opt-level = 'z'
+lto = true
+panic = 'abort'
+codegen-units = 1
