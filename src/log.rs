@@ -1,7 +1,6 @@
 use crate::{actor::Actor, mover::Mover, position::Position, resources::Resources};
-use macroquad::audio::play_sound_once;
 use macroquad::prelude::{collections::storage, draw_texture, WHITE};
-use macroquad::rand::{gen_range, ChooseRandom};
+use macroquad::rand::gen_range;
 
 #[derive(Clone)]
 pub struct Log {

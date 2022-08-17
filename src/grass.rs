@@ -5,7 +5,7 @@ use crate::{
 };
 
 use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
+use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 use macroquad::rand;
 
 #[derive(Clone)]
@@ -92,6 +92,7 @@ impl Grass {
         let mut children: Vec<Child> = Vec::new();
         if hedge_row != HedgeRow::None {
             // See comments in classify_hedge_segment for explanation of previous_mid_segment
+            #[allow(unused_assignments)]
             let mut hedge_tile = HedgeTile::Grass;
             let mut previous_mid_segment = None;
             for i in 1..13 {

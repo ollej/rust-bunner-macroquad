@@ -4,13 +4,12 @@ use crate::{
 };
 
 use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
+use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 use macroquad::rand;
 
 #[derive(Clone)]
 pub struct Water {
     dx: i32,
-    previous_dx: i32,
     timer: f32,
     index: i32,
     y: i32,
@@ -30,7 +29,7 @@ impl Row for Water {
         self.children.as_mut()
     }
 
-    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {
+    fn update(&mut self, _scroll_pos: i32, _bunner_pos: Option<Position>) {
         self.update_children();
         self.children.retain(|c| c.x() > -70 && c.x() < WIDTH + 70);
         self.timer -= 1.;
@@ -105,7 +104,6 @@ impl Water {
         }
         Self {
             dx,
-            previous_dx,
             timer: 0.,
             index,
             y,

@@ -3,7 +3,7 @@ use crate::{
     position::Position, row::Row, HEIGHT, ROW_HEIGHT,
 };
 
-use macroquad::prelude::{clear_background, debug, BLACK};
+use macroquad::prelude::{clear_background, BLACK};
 
 #[derive(Default)]
 pub struct Game {

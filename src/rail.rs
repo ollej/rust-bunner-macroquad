@@ -4,7 +4,7 @@ use crate::{
 };
 
 use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, debug, draw_texture, rand::gen_range, WHITE};
+use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 use macroquad::rand;
 use macroquad::rand::ChooseRandom;
 
@@ -28,7 +28,7 @@ impl Row for Rail {
         self.children.as_mut()
     }
 
-    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {
+    fn update(&mut self, scroll_pos: i32, _bunner_pos: Option<Position>) {
         self.update_children();
         if self.index == 2 {
             self.children

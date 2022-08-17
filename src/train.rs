@@ -1,7 +1,4 @@
-use crate::{
-    actor::Actor, player_direction::PlayerDirection, position::Position, resources::Resources,
-    ROW_HEIGHT,
-};
+use crate::{actor::Actor, position::Position, resources::Resources};
 use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 use macroquad::rand::ChooseRandom;
 

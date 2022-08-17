@@ -4,7 +4,7 @@ use crate::{
 };
 
 use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
+use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 use macroquad::rand;
 
 #[derive(Clone)]
@@ -27,7 +27,7 @@ impl Row for Dirt {
         self.children.as_mut()
     }
 
-    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {}
+    fn update(&mut self, _scroll_pos: i32, _bunner_pos: Option<Position>) {}
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
         let image = *storage::get::<Resources>()

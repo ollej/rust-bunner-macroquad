@@ -1,4 +1,4 @@
-use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
+use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 
 use crate::resources::Resources;
 

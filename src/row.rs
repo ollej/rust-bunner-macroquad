@@ -5,7 +5,7 @@ pub trait Row {
     fn children(&self) -> &[Child];
     fn children_mut(&mut self) -> &mut Vec<Child>;
 
-    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {
+    fn update(&mut self, _scroll_pos: i32, _bunner_pos: Option<Position>) {
         self.update_children();
     }
 
@@ -27,7 +27,7 @@ pub trait Row {
 
     fn next(&self) -> Box<dyn Row>;
 
-    fn check_collision(&self, x: i32) -> PlayerState {
+    fn check_collision(&self, _x: i32) -> PlayerState {
         PlayerState::Alive
     }
 
