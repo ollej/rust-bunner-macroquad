@@ -1,9 +1,9 @@
 use crate::{
     actor::Actor, player_direction::PlayerDirection, position::Position, resources::Resources,
-    ROW_HEIGHT,
 };
 use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 
+#[derive(Clone)]
 pub struct Splat {
     direction: PlayerDirection,
     position: Position,

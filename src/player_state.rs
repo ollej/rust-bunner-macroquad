@@ -1,3 +1,5 @@
+use crate::player_direction::PlayerDirection;
+
 #[derive(Clone, Copy, PartialEq)]
 pub enum PlayerState {
     Alive,

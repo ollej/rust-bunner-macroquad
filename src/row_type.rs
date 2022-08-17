@@ -1,6 +1,6 @@
 use crate::{
-    dirt::Dirt, grass::Grass, pavement::Pavement, player_state::PlayerState, rail::Rail,
-    road::Road, row::Row, water::Water,
+    child_type::ChildType, dirt::Dirt, grass::Grass, pavement::Pavement, player_state::PlayerState,
+    rail::Rail, road::Road, row::Row, water::Water,
 };
 
 #[derive(Clone)]
@@ -99,6 +99,17 @@ impl RowType {
             RowType::Rail(rail) => rail.draw(x, y),
             RowType::Water(water) => water.draw(x, y),
             RowType::Dirt(dirt) => dirt.draw(x, y),
+        }
+    }
+
+    pub fn children_mut(&mut self) -> &mut Vec<ChildType> {
+        match self {
+            RowType::Grass(grass) => grass.children_mut(),
+            RowType::Road(road) => road.children_mut(),
+            RowType::Pavement(pavement) => pavement.children_mut(),
+            RowType::Rail(rail) => rail.children_mut(),
+            RowType::Water(water) => water.children_mut(),
+            RowType::Dirt(dirt) => dirt.children_mut(),
         }
     }
 }

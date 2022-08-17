@@ -1,9 +1,10 @@
-use crate::{actor::Actor, hedge::Hedge, train::Train};
+use crate::{actor::Actor, hedge::Hedge, splat::Splat, train::Train};
 
 #[derive(Clone)]
 pub enum ChildType {
     Hedge(Hedge),
     Train(Train),
+    Splat(Splat),
 }
 
 impl ChildType {
@@ -11,6 +12,7 @@ impl ChildType {
         match self {
             ChildType::Hedge(hedge) => hedge.update(),
             ChildType::Train(train) => train.update(),
+            ChildType::Splat(splat) => splat.update(),
         }
     }
 
@@ -18,6 +20,7 @@ impl ChildType {
         match self {
             ChildType::Hedge(hedge) => hedge.draw(x, y),
             ChildType::Train(train) => train.draw(x, y),
+            ChildType::Splat(splat) => splat.draw(x, y),
         }
     }
 
@@ -25,6 +28,7 @@ impl ChildType {
         return match self {
             ChildType::Hedge(hedge) => hedge.x(),
             ChildType::Train(train) => train.x(),
+            ChildType::Splat(splat) => splat.x(),
         };
     }
 
@@ -32,6 +36,7 @@ impl ChildType {
         return match self {
             ChildType::Hedge(hedge) => hedge.width(),
             ChildType::Train(train) => train.width(),
+            ChildType::Splat(splat) => splat.width(),
         };
     }
 }

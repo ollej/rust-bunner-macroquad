@@ -3,7 +3,7 @@ use crate::{
     position::Position, row_type::RowType, HEIGHT, ROW_HEIGHT,
 };
 
-use macroquad::prelude::{clear_background, BLACK};
+use macroquad::prelude::{clear_background, debug, BLACK};
 
 #[derive(Default)]
 pub struct Game {
@@ -54,9 +54,8 @@ impl Game {
             bunner.update(self.scroll_pos, &mut self.rows);
             match bunner.state {
                 PlayerState::Eagle(x) => {
-                    if self.eagle.is_none() {
-                        self.eagle = Some(Eagle::new(Position::new(x, self.scroll_pos)));
-                    }
+                    self.eagle
+                        .get_or_insert_with(|| Eagle::new(Position::new(x, self.scroll_pos)));
                 }
                 _ => (),
             };
@@ -68,7 +67,7 @@ impl Game {
         // TODO: Play river/traffic sounds
     }
 
-    pub fn draw(&mut self) {
+    pub fn draw(&self) {
         clear_background(BLACK);
 
         for row in self.rows.iter().rev() {

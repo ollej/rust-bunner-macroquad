@@ -88,11 +88,9 @@ impl Bunner {
                             }
                         }
                         PlayerState::Splat(y_offset) => {
+                            self.y += y_offset;
                             self.timer = 100;
-                            // TODO: Add splat
-                            //current_row
-                            //    .children
-                            //    .push(Splat::new(self.direction, Position::new(self.x, y_offset)));
+                            play_sound_once(storage::get::<Resources>().splat_sound);
                         }
                         _ => self.timer = 100,
                     }
@@ -119,21 +117,15 @@ impl Bunner {
         // Choose sprite image
         self.image = match self.state {
             PlayerState::Alive => {
-                let sprite_index = match self.direction {
-                    PlayerDirection::Up => 0,
-                    PlayerDirection::Right => 1,
-                    PlayerDirection::Down => 2,
-                    PlayerDirection::Left => 3,
-                };
                 if self.timer > 0 {
                     *storage::get::<Resources>()
                         .jump_textures
-                        .get(sprite_index)
+                        .get(self.direction as usize)
                         .unwrap()
                 } else {
                     *storage::get::<Resources>()
                         .sit_textures
-                        .get(sprite_index)
+                        .get(self.direction as usize)
                         .unwrap()
                 }
             }
@@ -149,6 +141,10 @@ impl Bunner {
                     .get(splash_index)
                     .unwrap()
             }
+            PlayerState::Splat(_) => *storage::get::<Resources>()
+                .splat_textures
+                .get(self.direction as usize)
+                .unwrap(),
             _ => storage::get::<Resources>().blank_texture,
         };
     }
