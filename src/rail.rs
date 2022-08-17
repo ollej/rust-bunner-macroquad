@@ -31,7 +31,7 @@ impl Row for Rail {
 
     fn update(&mut self, scroll_pos: i32) {
         self.update_children();
-        if self.index == 1 {
+        if self.index == 2 {
             self.children
                 .retain(|c| c.x() > -1000 && c.x() < WIDTH + 1000);
             if self.y < scroll_pos + HEIGHT
@@ -40,9 +40,9 @@ impl Row for Rail {
             {
                 let dx = *vec![-20, 20].choose().unwrap();
                 let position = if dx < 0 {
-                    Position::new(WIDTH + 1000, -13)
+                    Position::new(WIDTH + 1000, 47)
                 } else {
-                    Position::new(WIDTH - 1000, -13)
+                    Position::new(WIDTH - 1000, 47)
                 };
                 self.children
                     .push(ChildType::Train(Train::new(dx, position)));
@@ -86,11 +86,9 @@ impl Row for Rail {
     }
 
     fn check_collision(&self, x: i32) -> PlayerState {
-        if let Some(predecessor) = &self.predecessor {
-            if self.index == 2 && predecessor.collide(x, 0) {
-                play_sound_once(storage::get::<Resources>().splat_sound);
-                return PlayerState::Splat(8);
-            }
+        if self.index == 2 && self.collide(x, 0) {
+            play_sound_once(storage::get::<Resources>().splat_sound);
+            return PlayerState::Splat(8);
         }
         PlayerState::Alive
     }
