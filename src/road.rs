@@ -156,14 +156,14 @@ impl Road {
 
     pub fn new(previous_dx: i32, index: i32, y: i32) -> Self {
         // Populate the row with child objects (cars or logs). Without this, the row would initially be empty.
-        let mut children = Vec::new();
-        let mut x = -WIDTH / 2 - 70;
         let dx = **Self::DXS
             .into_iter()
             .filter(|&dx| *dx != previous_dx)
             .collect::<Vec<&i32>>()
             .choose()
             .unwrap();
+        let mut children = Vec::new();
+        let mut x = -WIDTH / 2 - 70;
         while x < WIDTH / 2 + 70 {
             x += rand::gen_range::<i32>(240, 481);
             let pos = if dx > 0 {

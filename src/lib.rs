@@ -12,6 +12,7 @@ pub mod hedge;
 pub mod hedge_mask;
 pub mod hedge_row;
 pub mod hedge_tile;
+pub mod log;
 pub mod mover;
 pub mod pavement;
 pub mod player_direction;

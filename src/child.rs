@@ -1,4 +1,4 @@
-use crate::{actor::Actor, car::Car, hedge::Hedge, splat::Splat, train::Train};
+use crate::{actor::Actor, car::Car, hedge::Hedge, log::Log, splat::Splat, train::Train};
 
 #[derive(Clone)]
 pub enum Child {
@@ -6,6 +6,7 @@ pub enum Child {
     Train(Train),
     Splat(Splat),
     Car(Car),
+    Log(Log),
 }
 
 impl Child {
@@ -15,6 +16,7 @@ impl Child {
             Child::Train(train) => train.update(),
             Child::Splat(splat) => splat.update(),
             Child::Car(car) => car.update(),
+            Child::Log(log) => log.update(),
         }
     }
 
@@ -24,6 +26,7 @@ impl Child {
             Child::Train(train) => train.draw(x, y),
             Child::Splat(splat) => splat.draw(x, y),
             Child::Car(car) => car.draw(x, y),
+            Child::Log(log) => log.draw(x, y),
         }
     }
 
@@ -33,6 +36,7 @@ impl Child {
             Child::Train(train) => train.x(),
             Child::Splat(splat) => splat.x(),
             Child::Car(car) => car.x(),
+            Child::Log(log) => log.x(),
         };
     }
 
@@ -42,6 +46,7 @@ impl Child {
             Child::Train(train) => train.width(),
             Child::Splat(splat) => splat.width(),
             Child::Car(car) => car.width(),
+            Child::Log(log) => log.width(),
         };
     }
 }

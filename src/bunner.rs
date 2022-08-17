@@ -75,7 +75,7 @@ impl Bunner {
                     self.state = current_row.check_collision(self.position.x);
                     match self.state {
                         PlayerState::Alive => {
-                            //self.x += current_row.push_bunner();
+                            self.position.x += current_row.push();
                             if land {
                                 current_row.play_sound();
                             }
@@ -91,6 +91,10 @@ impl Bunner {
                                 )),
                             );
                             play_sound_once(storage::get::<Resources>().splat_sound);
+                        }
+                        PlayerState::Splash => {
+                            play_sound_once(storage::get::<Resources>().splash_sound);
+                            self.timer = 100;
                         }
                         _ => self.timer = 100,
                     }
