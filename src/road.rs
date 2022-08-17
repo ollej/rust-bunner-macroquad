@@ -1,17 +1,19 @@
 use crate::{
-    actor::Actor, car::SoundIndex, car::TrafficSound, child::Child, grass::Grass, mover::Mover,
-    pavement::Pavement, player_state::PlayerState, position::Position, rail::Rail,
+    actor::Actor, car::Car, car::SoundIndex, car::TrafficSound, child::Child, grass::Grass,
+    mover::Mover, pavement::Pavement, player_state::PlayerState, position::Position, rail::Rail,
     resources::Resources, row::Row, ROW_HEIGHT, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
 use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
 use macroquad::rand;
+use macroquad::rand::ChooseRandom;
 
 #[derive(Clone)]
 pub struct Road {
     dx: i32,
     previous_dx: i32,
+    timer: f32,
     index: i32,
     y: i32,
     children: Vec<Child>,
@@ -32,6 +34,19 @@ impl Row for Road {
 
     fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {
         self.update_children();
+        self.children.retain(|c| c.x() > -70 && c.x() < WIDTH + 70);
+        self.timer -= 1.;
+
+        // Create new child objects on a random interval
+        if self.timer < 0. {
+            let pos = Position::new(if self.dx < 0 { WIDTH + 70 } else { -70 }, 0);
+            self.children.push(Child::Car(Car::new(self.dx, pos)));
+            // 240 is minimum distance between the start of one child object and the start of the next, assuming its
+            // speed is 1. If the speed is 2, they can occur twice as frequently without risk of overlapping with
+            // each other. The maximum distance is double the minimum distance (1 + random value of 1)
+            self.timer = (1. + rand::gen_range::<f32>(0.0, 1.0)) * (240 / self.dx.abs()) as f32;
+        }
+
         if let Some(bunner_pos) = bunner_pos {
             for traffic_sound in Road::TRAFFIC_SOUNDS.iter() {
                 // Is the player on the appropriate row?
@@ -109,14 +124,8 @@ impl Row for Road {
         x >= 16 && x <= WIDTH - 16 && !self.collide(x, 8)
     }
 
-    fn collide(&self, x: i32, margin: i32) -> bool {
-        // TODO: Check against movers
-        false
-    }
-
     fn check_collision(&self, x: i32) -> PlayerState {
         if self.collide(x, 0) {
-            play_sound_once(storage::get::<Resources>().splat_sound);
             PlayerState::Splat(0)
         } else {
             PlayerState::Alive
@@ -143,14 +152,34 @@ impl Road {
             sound: SoundIndex::Zoom,
         },
     ];
+    const DXS: &'static [i32] = &[-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
 
     pub fn new(previous_dx: i32, index: i32, y: i32) -> Self {
+        // Populate the row with child objects (cars or logs). Without this, the row would initially be empty.
+        let mut children = Vec::new();
+        let mut x = -WIDTH / 2 - 70;
+        let dx = **Self::DXS
+            .into_iter()
+            .filter(|&dx| *dx != previous_dx)
+            .collect::<Vec<&i32>>()
+            .choose()
+            .unwrap();
+        while x < WIDTH / 2 + 70 {
+            x += rand::gen_range::<i32>(240, 481);
+            let pos = if dx > 0 {
+                Position::new(WIDTH / 2 + x, 0)
+            } else {
+                Position::new(WIDTH / 2 - x, 0)
+            };
+            children.push(Child::Car(Car::new(dx, pos)));
+        }
         Self {
-            dx: 0,
+            dx: dx,
             previous_dx,
+            timer: 0.,
             index,
             y,
-            children: Vec::new(),
+            children: children,
         }
     }
 

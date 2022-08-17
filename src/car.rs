@@ -51,7 +51,7 @@ impl Actor for Car {
 }
 
 impl Car {
-    pub fn new(dx: i32) -> Self {
+    pub fn new(dx: i32, position: Position) -> Self {
         let image_index = if dx < 0 {
             *vec![0, 2, 4].choose().unwrap()
         } else {
@@ -59,7 +59,7 @@ impl Car {
         };
         Self {
             dx,
-            position: Position::new(0, 0),
+            position,
             image_index,
             played_sounds: HashSet::new(),
         }
