@@ -2,6 +2,7 @@ use macroquad::audio::{play_sound, set_sound_volume, PlaySoundParams, Sound};
 use macroquad::prelude::{
     collections::storage, draw_texture, is_key_pressed, rand, KeyCode, WHITE,
 };
+use std::fs;
 
 use crate::{
     bunner::Bunner,
@@ -31,7 +32,7 @@ impl GlobalState {
         }
     }
 
-    pub fn init(&self) {
+    pub fn init(&mut self) {
         rand::srand(macroquad::miniquad::date::now() as u64);
         play_sound(
             self.music,
@@ -40,6 +41,12 @@ impl GlobalState {
                 volume: 1.,
             },
         );
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            self.high_score = fs::read_to_string("high.txt")
+                .map_or(Ok(0), |i| i.parse::<u32>())
+                .unwrap_or(0);
+        }
     }
 
     pub fn update(&mut self) {
@@ -57,7 +64,10 @@ impl GlobalState {
             State::Play => {
                 if self.game.game_over() {
                     self.high_score = self.high_score.max(self.game.score());
-                    // TODO: Write highscore
+                    #[cfg(not(target_arch = "wasm32"))]
+                    {
+                        fs::write("high.txt", self.high_score.to_string()).ok();
+                    }
 
                     self.state = State::GameOver;
                 } else {
