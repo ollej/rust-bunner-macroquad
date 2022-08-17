@@ -1,7 +1,6 @@
 use crate::{
-    child_type::ChildType, grass::Grass, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
-    hedge_tile::HedgeTile, pavement::Pavement, player_state::PlayerState, position::Position,
-    rail::Rail, resources::Resources, row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    child_type::ChildType, grass::Grass, pavement::Pavement, player_state::PlayerState, rail::Rail,
+    resources::Resources, row::Row, ROW_HEIGHT, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -53,29 +52,29 @@ impl Row for Road {
         play_sound_once(storage::get::<Resources>().road_sound);
     }
 
-    fn next(&self) -> RowType {
+    fn next(&self) -> Box<dyn Row> {
         let y = self.y - ROW_HEIGHT;
         if self.index == 0 {
-            RowType::Road(Road::new(self.dx, 1, y))
+            Box::new(Road::new(self.dx, 1, y))
         } else if self.index < 5 {
             let random = rand::gen_range::<u8>(0, 100);
             if random < 80 {
-                RowType::Road(Road::new(self.dx, self.index + 1, y))
+                Box::new(Road::new(self.dx, self.index + 1, y))
             } else if random < 88 {
-                RowType::Grass(Grass::without_hedge(rand::gen_range(0, 7), y))
+                Box::new(Grass::without_hedge(rand::gen_range(0, 7), y))
             } else if random < 94 {
-                RowType::Rail(Rail::empty(y))
+                Box::new(Rail::empty(y))
             } else {
-                RowType::Pavement(Pavement::empty(y))
+                Box::new(Pavement::empty(y))
             }
         } else {
             let random = rand::gen_range::<u8>(0, 100);
             if random < 60 {
-                RowType::Grass(Grass::without_hedge(rand::gen_range(0, 7), y))
+                Box::new(Grass::without_hedge(rand::gen_range(0, 7), y))
             } else if random < 90 {
-                RowType::Rail(Rail::empty(y))
+                Box::new(Rail::empty(y))
             } else {
-                RowType::Pavement(Pavement::empty(y))
+                Box::new(Pavement::empty(y))
             }
         }
     }

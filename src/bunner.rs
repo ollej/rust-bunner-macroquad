@@ -6,7 +6,7 @@ use std::collections::VecDeque;
 
 use crate::{
     player_direction::PlayerDirection, player_state::PlayerState, position::Position,
-    resources::Resources, row_type::RowType, HEIGHT, WIDTH,
+    resources::Resources, row::Row, HEIGHT, WIDTH,
 };
 
 pub struct Bunner {
@@ -36,7 +36,7 @@ impl Bunner {
         }
     }
 
-    pub fn update(&mut self, scroll_pos: i32, rows: &mut Vec<RowType>) {
+    pub fn update(&mut self, scroll_pos: i32, rows: &mut Vec<Box<dyn Row>>) {
         if let Some(direction) = get_last_key_pressed()
             .map(|d| match d {
                 KeyCode::Up => Some(PlayerDirection::Up),
@@ -76,7 +76,7 @@ impl Bunner {
                 if let Some(current_row) = rows
                     .iter()
                     .filter(|row| row.y() == self.y)
-                    .collect::<Vec<&RowType>>()
+                    .collect::<Vec<&Box<dyn Row>>>()
                     .first()
                 {
                     self.state = current_row.check_collision(self.x);
@@ -155,7 +155,7 @@ impl Bunner {
         draw_texture(self.image, x, y, WHITE);
     }
 
-    pub fn handle_input(&mut self, direction: Option<PlayerDirection>, rows: &[RowType]) {
+    pub fn handle_input(&mut self, direction: Option<PlayerDirection>, rows: &[Box<dyn Row>]) {
         if let Some(direction) = direction {
             for row in rows.iter() {
                 if row.y() == self.y + Self::MOVE_DISTANCE * Self::dy(&direction) {

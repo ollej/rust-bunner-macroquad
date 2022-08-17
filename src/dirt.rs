@@ -1,6 +1,5 @@
 use crate::{
-    child_type::ChildType, resources::Resources, road::Road, row::Row, row_type::RowType,
-    water::Water, ROW_HEIGHT,
+    child_type::ChildType, resources::Resources, road::Road, row::Row, water::Water, ROW_HEIGHT,
 };
 
 use macroquad::audio::play_sound_once;
@@ -43,21 +42,21 @@ impl Row for Dirt {
         play_sound_once(storage::get::<Resources>().dirt_sound);
     }
 
-    fn next(&self) -> RowType {
+    fn next(&self) -> Box<dyn Row> {
         let y = self.y - ROW_HEIGHT;
         if self.index <= 5 {
-            RowType::Dirt(Dirt::new(self.index + 8, y))
+            Box::new(Dirt::new(self.index + 8, y))
         } else if self.index == 6 {
-            RowType::Dirt(Dirt::new(7, y))
+            Box::new(Dirt::new(7, y))
         } else if self.index == 7 {
-            RowType::Dirt(Dirt::new(15, y))
+            Box::new(Dirt::new(15, y))
         } else if self.index >= 8 && self.index <= 14 {
-            RowType::Dirt(Dirt::new(self.index + 1, y))
+            Box::new(Dirt::new(self.index + 1, y))
         } else {
             if rand::gen_range::<u8>(0, 2) == 1 {
-                RowType::Road(Road::empty(y))
+                Box::new(Road::empty(y))
             } else {
-                RowType::Water(Water::empty(y))
+                Box::new(Water::empty(y))
             }
         }
     }

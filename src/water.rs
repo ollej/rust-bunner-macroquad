@@ -1,7 +1,4 @@
-use crate::{
-    child_type::ChildType, dirt::Dirt, resources::Resources, row::Row, row_type::RowType,
-    ROW_HEIGHT,
-};
+use crate::{child_type::ChildType, dirt::Dirt, resources::Resources, row::Row, ROW_HEIGHT};
 
 use macroquad::audio::play_sound_once;
 use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
@@ -48,12 +45,12 @@ impl Row for Water {
         play_sound_once(storage::get::<Resources>().log_sound);
     }
 
-    fn next(&self) -> RowType {
+    fn next(&self) -> Box<dyn Row> {
         let y = self.y - ROW_HEIGHT;
         if self.index == 7 || (self.index >= 1 && rand::gen_range(0, 2) == 0) {
-            RowType::Dirt(Dirt::new(rand::gen_range(4, 7), y))
+            Box::new(Dirt::new(rand::gen_range(4, 7), y))
         } else {
-            RowType::Water(Water::new(self.dx, self.index + 1, y))
+            Box::new(Water::new(self.dx, self.index + 1, y))
         }
     }
 

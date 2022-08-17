@@ -19,7 +19,6 @@ pub mod rail;
 pub mod resources;
 pub mod road;
 pub mod row;
-pub mod row_type;
 pub mod splat;
 pub mod state;
 pub mod train;

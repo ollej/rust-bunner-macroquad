@@ -1,6 +1,6 @@
 use crate::{
     actor::Actor, bunner::Bunner, eagle::Eagle, grass::Grass, player_state::PlayerState,
-    position::Position, row_type::RowType, HEIGHT, ROW_HEIGHT,
+    position::Position, row::Row, HEIGHT, ROW_HEIGHT,
 };
 
 use macroquad::prelude::{clear_background, debug, BLACK};
@@ -10,7 +10,7 @@ pub struct Game {
     pub bunner: Option<Bunner>,
     pub scroll_pos: i32,
     eagle: Option<Eagle>,
-    rows: Vec<RowType>,
+    rows: Vec<Box<dyn Row>>,
 }
 
 impl Game {
@@ -19,7 +19,7 @@ impl Game {
             bunner,
             scroll_pos: -HEIGHT,
             eagle: None,
-            rows: vec![RowType::Grass(Grass::without_hedge(0, 0))],
+            rows: vec![Box::new(Grass::without_hedge(0, 0))],
         }
     }
 

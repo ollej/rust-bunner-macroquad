@@ -1,7 +1,4 @@
-use crate::{
-    child_type::ChildType, resources::Resources, road::Road, row::Row, row_type::RowType,
-    ROW_HEIGHT,
-};
+use crate::{child_type::ChildType, resources::Resources, road::Road, row::Row, ROW_HEIGHT};
 
 use macroquad::audio::play_sound_once;
 use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
@@ -40,12 +37,12 @@ impl Row for Pavement {
         play_sound_once(storage::get::<Resources>().sidewalk_sound);
     }
 
-    fn next(&self) -> RowType {
+    fn next(&self) -> Box<dyn Row> {
         let y = self.y - ROW_HEIGHT;
         if self.index < 2 {
-            RowType::Pavement(Pavement::new(self.index + 1, y))
+            Box::new(Pavement::new(self.index + 1, y))
         } else {
-            RowType::Road(Road::empty(y))
+            Box::new(Road::empty(y))
         }
     }
 }

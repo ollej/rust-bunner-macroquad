@@ -1,6 +1,6 @@
 use crate::{
     child_type::ChildType, player_state::PlayerState, position::Position, resources::Resources,
-    road::Road, row::Row, row_type::RowType, train::Train, water::Water, HEIGHT, ROW_HEIGHT, WIDTH,
+    road::Road, row::Row, train::Train, water::Water, HEIGHT, ROW_HEIGHT, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -70,15 +70,15 @@ impl Row for Rail {
         play_sound_once(storage::get::<Resources>().grass_sound);
     }
 
-    fn next(&self) -> RowType {
+    fn next(&self) -> Box<dyn Row> {
         let y = self.y - ROW_HEIGHT;
         if self.index < 3 {
-            RowType::Rail(Rail::new(self.index + 1, y))
+            Box::new(Rail::new(self.index + 1, y))
         } else {
             if rand::gen_range::<u8>(0, 2) == 0 {
-                RowType::Road(Road::empty(y))
+                Box::new(Road::empty(y))
             } else {
-                RowType::Water(Water::empty(y))
+                Box::new(Water::empty(y))
             }
         }
     }

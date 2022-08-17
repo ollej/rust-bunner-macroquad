@@ -1,7 +1,4 @@
-use crate::{
-    actor::Actor, child_type::ChildType, player_state::PlayerState, position::Position,
-    resources::Resources, row_type::RowType, TILE_WIDTH, WIDTH,
-};
+use crate::{child_type::ChildType, player_state::PlayerState, WIDTH};
 
 pub trait Row {
     fn y(&self) -> i32;
@@ -28,7 +25,7 @@ pub trait Row {
 
     fn play_sound(&self);
 
-    fn next(&self) -> RowType;
+    fn next(&self) -> Box<dyn Row>;
 
     fn check_collision(&self, x: i32) -> PlayerState {
         PlayerState::Alive

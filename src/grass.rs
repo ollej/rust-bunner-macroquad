@@ -1,7 +1,7 @@
 use crate::{
     child_type::ChildType, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
     hedge_tile::HedgeTile, player_state::PlayerState, position::Position, resources::Resources,
-    road::Road, row::Row, row_type::RowType, water::Water, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    road::Road, row::Row, water::Water, ROW_HEIGHT, TILE_WIDTH, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -45,7 +45,7 @@ impl Row for Grass {
         play_sound_once(storage::get::<Resources>().grass_sound);
     }
 
-    fn next(&self) -> RowType {
+    fn next(&self) -> Box<dyn Row> {
         let y = self.y - ROW_HEIGHT;
         if self.index <= 5 {
             self.grass_row(self.index + 8, y)
@@ -57,9 +57,9 @@ impl Row for Grass {
             self.grass_row(self.index + 1, y)
         } else {
             if rand::gen_range::<u8>(0, 2) == 0 {
-                RowType::Road(Road::empty(y))
+                Box::new(Road::empty(y))
             } else {
-                RowType::Water(Water::empty(y))
+                Box::new(Water::empty(y))
             }
         }
     }
@@ -199,8 +199,8 @@ impl Grass {
         mask
     }
 
-    fn grass_row(&self, index: i32, y: i32) -> RowType {
-        RowType::Grass(Grass::new(
+    fn grass_row(&self, index: i32, y: i32) -> Box<dyn Row> {
+        Box::new(Grass::new(
             Some(self.hedge_mask.clone()),
             self.hedge_row,
             index,
