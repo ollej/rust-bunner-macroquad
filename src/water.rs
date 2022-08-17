@@ -1,7 +1,6 @@
 use crate::{
-    child_type::ChildType, dirt::Dirt, grass::Grass, hedge::Hedge, hedge_mask::HedgeMask,
-    hedge_row::HedgeRow, hedge_tile::HedgeTile, player_state::PlayerState, position::Position,
-    resources::Resources, road::Road, row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    child_type::ChildType, dirt::Dirt, resources::Resources, row::Row, row_type::RowType,
+    ROW_HEIGHT,
 };
 
 use macroquad::audio::play_sound_once;
@@ -10,7 +9,8 @@ use macroquad::rand;
 
 #[derive(Clone)]
 pub struct Water {
-    predecessor: Option<Box<RowType>>,
+    dx: i32,
+    previous_dx: i32,
     index: i32,
     y: i32,
     children: Vec<ChildType>,
@@ -49,12 +49,11 @@ impl Row for Water {
     }
 
     fn next(&self) -> RowType {
-        let predecessor = Some(Box::new(RowType::Water(self.clone())));
         let y = self.y - ROW_HEIGHT;
         if self.index == 7 || (self.index >= 1 && rand::gen_range(0, 2) == 0) {
-            RowType::Dirt(Dirt::new(predecessor, rand::gen_range(4, 7), y))
+            RowType::Dirt(Dirt::new(rand::gen_range(4, 7), y))
         } else {
-            RowType::Water(Water::new(predecessor, self.index + 1, y))
+            RowType::Water(Water::new(self.dx, self.index + 1, y))
         }
     }
 
@@ -62,12 +61,17 @@ impl Row for Water {
 }
 
 impl Water {
-    pub fn new(predecessor: Option<Box<RowType>>, index: i32, y: i32) -> Self {
+    pub fn new(previous_dx: i32, index: i32, y: i32) -> Self {
         Self {
-            predecessor,
+            dx: 0,
+            previous_dx,
             index,
             y,
             children: Vec::new(),
         }
+    }
+
+    pub fn empty(y: i32) -> Self {
+        Self::new(0, 0, y)
     }
 }

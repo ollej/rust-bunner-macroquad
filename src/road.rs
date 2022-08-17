@@ -10,7 +10,8 @@ use macroquad::rand;
 
 #[derive(Clone)]
 pub struct Road {
-    predecessor: Option<Box<RowType>>,
+    dx: i32,
+    previous_dx: i32,
     index: i32,
     y: i32,
     children: Vec<ChildType>,
@@ -53,29 +54,28 @@ impl Row for Road {
     }
 
     fn next(&self) -> RowType {
-        let predecessor = Some(Box::new(RowType::Road(self.clone())));
         let y = self.y - ROW_HEIGHT;
         if self.index == 0 {
-            RowType::Road(Road::new(predecessor, 1, y))
+            RowType::Road(Road::new(self.dx, 1, y))
         } else if self.index < 5 {
             let random = rand::gen_range::<u8>(0, 100);
             if random < 80 {
-                RowType::Road(Road::new(predecessor, self.index + 1, y))
+                RowType::Road(Road::new(self.dx, self.index + 1, y))
             } else if random < 88 {
-                RowType::Grass(Grass::new(predecessor, rand::gen_range(0, 7), y))
+                RowType::Grass(Grass::without_hedge(rand::gen_range(0, 7), y))
             } else if random < 94 {
-                RowType::Rail(Rail::new(predecessor, 0, y))
+                RowType::Rail(Rail::empty(y))
             } else {
-                RowType::Pavement(Pavement::new(predecessor, 0, y))
+                RowType::Pavement(Pavement::empty(y))
             }
         } else {
             let random = rand::gen_range::<u8>(0, 100);
             if random < 60 {
-                RowType::Grass(Grass::new(predecessor, rand::gen_range(0, 7), y))
+                RowType::Grass(Grass::without_hedge(rand::gen_range(0, 7), y))
             } else if random < 90 {
-                RowType::Rail(Rail::new(predecessor, 0, y))
+                RowType::Rail(Rail::empty(y))
             } else {
-                RowType::Pavement(Pavement::new(predecessor, 0, y))
+                RowType::Pavement(Pavement::empty(y))
             }
         }
     }
@@ -104,12 +104,17 @@ impl Row for Road {
 }
 
 impl Road {
-    pub fn new(predecessor: Option<Box<RowType>>, index: i32, y: i32) -> Self {
+    pub fn new(previous_dx: i32, index: i32, y: i32) -> Self {
         Self {
-            predecessor,
+            dx: 0,
+            previous_dx,
             index,
             y,
             children: Vec::new(),
         }
+    }
+
+    pub fn empty(y: i32) -> Self {
+        Self::new(0, 0, y)
     }
 }

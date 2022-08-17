@@ -1,16 +1,13 @@
 use crate::{
-    child_type::ChildType, grass::Grass, hedge::Hedge, hedge_mask::HedgeMask, hedge_row::HedgeRow,
-    hedge_tile::HedgeTile, player_state::PlayerState, position::Position, resources::Resources,
-    road::Road, row::Row, row_type::RowType, ROW_HEIGHT, TILE_WIDTH, WIDTH,
+    child_type::ChildType, resources::Resources, road::Road, row::Row, row_type::RowType,
+    ROW_HEIGHT,
 };
 
 use macroquad::audio::play_sound_once;
 use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
-use macroquad::rand;
 
 #[derive(Clone)]
 pub struct Pavement {
-    predecessor: Option<Box<RowType>>,
     index: i32,
     y: i32,
     children: Vec<ChildType>,
@@ -44,23 +41,25 @@ impl Row for Pavement {
     }
 
     fn next(&self) -> RowType {
-        let predecessor = Some(Box::new(RowType::Pavement(self.clone())));
         let y = self.y - ROW_HEIGHT;
         if self.index < 2 {
-            RowType::Pavement(Pavement::new(predecessor, self.index + 1, y))
+            RowType::Pavement(Pavement::new(self.index + 1, y))
         } else {
-            RowType::Road(Road::new(predecessor, 0, y))
+            RowType::Road(Road::empty(y))
         }
     }
 }
 
 impl Pavement {
-    pub fn new(predecessor: Option<Box<RowType>>, index: i32, y: i32) -> Self {
+    pub fn new(index: i32, y: i32) -> Self {
         Self {
-            predecessor,
             index,
             y,
             children: Vec::new(),
         }
+    }
+
+    pub fn empty(y: i32) -> Self {
+        Self::new(0, y)
     }
 }

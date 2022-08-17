@@ -9,7 +9,6 @@ use macroquad::rand;
 
 #[derive(Clone)]
 pub struct Dirt {
-    predecessor: Option<Box<RowType>>,
     index: i32,
     y: i32,
     children: Vec<ChildType>,
@@ -45,30 +44,28 @@ impl Row for Dirt {
     }
 
     fn next(&self) -> RowType {
-        let predecessor = Some(Box::new(RowType::Dirt(self.clone())));
         let y = self.y - ROW_HEIGHT;
         if self.index <= 5 {
-            RowType::Dirt(Dirt::new(predecessor, self.index + 8, y))
+            RowType::Dirt(Dirt::new(self.index + 8, y))
         } else if self.index == 6 {
-            RowType::Dirt(Dirt::new(predecessor, 7, y))
+            RowType::Dirt(Dirt::new(7, y))
         } else if self.index == 7 {
-            RowType::Dirt(Dirt::new(predecessor, 15, y))
+            RowType::Dirt(Dirt::new(15, y))
         } else if self.index >= 8 && self.index <= 14 {
-            RowType::Dirt(Dirt::new(predecessor, self.index + 1, y))
+            RowType::Dirt(Dirt::new(self.index + 1, y))
         } else {
             if rand::gen_range::<u8>(0, 2) == 1 {
-                RowType::Road(Road::new(predecessor, 0, y))
+                RowType::Road(Road::empty(y))
             } else {
-                RowType::Water(Water::new(predecessor, 0, y))
+                RowType::Water(Water::empty(y))
             }
         }
     }
 }
 
 impl Dirt {
-    pub fn new(predecessor: Option<Box<RowType>>, index: i32, y: i32) -> Self {
+    pub fn new(index: i32, y: i32) -> Self {
         Self {
-            predecessor,
             index,
             y,
             children: Vec::new(),

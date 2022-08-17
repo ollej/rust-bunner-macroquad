@@ -19,7 +19,7 @@ impl Game {
             bunner,
             scroll_pos: -HEIGHT,
             eagle: None,
-            rows: vec![RowType::Grass(Grass::new(None, 0, 0))],
+            rows: vec![RowType::Grass(Grass::without_hedge(0, 0))],
         }
     }
 

@@ -10,7 +10,6 @@ use macroquad::rand;
 
 #[derive(Clone)]
 pub struct Grass {
-    predecessor: Option<Box<RowType>>,
     index: i32,
     y: i32,
     hedge_row: HedgeRow,
@@ -47,21 +46,20 @@ impl Row for Grass {
     }
 
     fn next(&self) -> RowType {
-        let predecessor = Some(Box::new(RowType::Grass(self.clone())));
         let y = self.y - ROW_HEIGHT;
         if self.index <= 5 {
-            RowType::Grass(Grass::new(predecessor, self.index + 8, y))
+            self.grass_row(self.index + 8, y)
         } else if self.index == 6 {
-            RowType::Grass(Grass::new(predecessor, 7, y))
+            self.grass_row(7, y)
         } else if self.index == 7 {
-            RowType::Grass(Grass::new(predecessor, 15, y))
+            self.grass_row(15, y)
         } else if self.index >= 8 && self.index <= 14 {
-            RowType::Grass(Grass::new(predecessor, self.index + 1, y))
+            self.grass_row(self.index + 1, y)
         } else {
             if rand::gen_range::<u8>(0, 2) == 0 {
-                RowType::Road(Road::new(predecessor, 0, y))
+                RowType::Road(Road::empty(y))
             } else {
-                RowType::Water(Water::new(predecessor, 0, y))
+                RowType::Water(Water::empty(y))
             }
         }
     }
@@ -76,17 +74,20 @@ impl Row for Grass {
 }
 
 impl Grass {
-    pub fn new(predecessor: Option<Box<RowType>>, index: i32, y: i32) -> Self {
-        let (hedge_mask, hedge_row) = match predecessor.clone() {
-            None => Self::first_hedge_row(index),
-            Some(row) => match *row {
-                RowType::Grass(p) if p.hedge_row == HedgeRow::None => Self::first_hedge_row(index),
-                RowType::Grass(p) if p.hedge_row == HedgeRow::First => {
-                    (p.hedge_mask.clone(), HedgeRow::Second)
-                }
-                _ => (Vec::new(), HedgeRow::None),
-            },
-        };
+    pub fn new(
+        previous_hedge_mask: Option<Vec<HedgeMask>>,
+        previous_hedge_row: HedgeRow,
+        index: i32,
+        y: i32,
+    ) -> Self {
+        let (hedge_mask, hedge_row) =
+            if previous_hedge_mask.is_none() || previous_hedge_row == HedgeRow::None {
+                Self::first_hedge_row(index)
+            } else if previous_hedge_row == HedgeRow::First {
+                (previous_hedge_mask.unwrap(), HedgeRow::Second)
+            } else {
+                (Vec::new(), HedgeRow::None)
+            };
 
         let mut children: Vec<ChildType> = Vec::new();
         if hedge_row != HedgeRow::None {
@@ -107,13 +108,16 @@ impl Grass {
         }
 
         Self {
-            predecessor: predecessor,
             y,
             index,
             hedge_row,
             hedge_mask,
             children,
         }
+    }
+
+    pub fn without_hedge(index: i32, y: i32) -> Self {
+        Self::new(None, HedgeRow::None, index, y)
     }
 
     pub fn classify_hedge_segment(
@@ -193,5 +197,14 @@ impl Grass {
         mask.push(new_mask.pop().unwrap());
 
         mask
+    }
+
+    fn grass_row(&self, index: i32, y: i32) -> RowType {
+        RowType::Grass(Grass::new(
+            Some(self.hedge_mask.clone()),
+            self.hedge_row,
+            index,
+            y,
+        ))
     }
 }

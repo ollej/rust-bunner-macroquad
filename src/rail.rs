@@ -10,7 +10,6 @@ use macroquad::rand::ChooseRandom;
 
 #[derive(Clone)]
 pub struct Rail {
-    predecessor: Option<Box<RowType>>,
     index: i32,
     y: i32,
     children: Vec<ChildType>,
@@ -72,15 +71,14 @@ impl Row for Rail {
     }
 
     fn next(&self) -> RowType {
-        let predecessor = Some(Box::new(RowType::Rail(self.clone())));
         let y = self.y - ROW_HEIGHT;
         if self.index < 3 {
-            RowType::Rail(Rail::new(predecessor, self.index + 1, y))
+            RowType::Rail(Rail::new(self.index + 1, y))
         } else {
             if rand::gen_range::<u8>(0, 2) == 0 {
-                RowType::Road(Road::new(predecessor, 0, y))
+                RowType::Road(Road::empty(y))
             } else {
-                RowType::Water(Water::new(predecessor, 0, y))
+                RowType::Water(Water::empty(y))
             }
         }
     }
@@ -95,12 +93,15 @@ impl Row for Rail {
 }
 
 impl Rail {
-    pub fn new(predecessor: Option<Box<RowType>>, index: i32, y: i32) -> Self {
+    pub fn new(index: i32, y: i32) -> Self {
         Self {
-            predecessor,
             index,
             y,
             children: Vec::new(),
         }
+    }
+
+    pub fn empty(y: i32) -> Self {
+        Self::new(0, y)
     }
 }
