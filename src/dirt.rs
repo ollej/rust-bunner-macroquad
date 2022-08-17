@@ -1,5 +1,6 @@
 use crate::{
-    child_type::ChildType, resources::Resources, road::Road, row::Row, water::Water, ROW_HEIGHT,
+    child_type::ChildType, position::Position, resources::Resources, road::Road, row::Row,
+    water::Water, ROW_HEIGHT,
 };
 
 use macroquad::audio::play_sound_once;
@@ -26,7 +27,7 @@ impl Row for Dirt {
         self.children.as_mut()
     }
 
-    fn update(&mut self, scroll_pos: i32) {}
+    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {}
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
         let image = *storage::get::<Resources>()

@@ -1,5 +1,6 @@
 pub mod actor;
 pub mod bunner;
+pub mod car;
 pub mod child_type;
 pub mod dirt;
 pub mod drawing;
@@ -11,6 +12,7 @@ pub mod hedge;
 pub mod hedge_mask;
 pub mod hedge_row;
 pub mod hedge_tile;
+pub mod mover;
 pub mod pavement;
 pub mod player_direction;
 pub mod player_state;

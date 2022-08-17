@@ -12,8 +12,7 @@ use crate::{
 pub struct Bunner {
     pub state: PlayerState,
     pub timer: i32,
-    pub x: i32,
-    pub y: i32,
+    pub position: Position,
     pub min_y: i32,
     direction: PlayerDirection,
     input_queue: VecDeque<PlayerDirection>,
@@ -27,8 +26,7 @@ impl Bunner {
         Self {
             state: PlayerState::Alive,
             timer: 0,
-            x: position.x,
-            y: position.y,
+            position,
             min_y: position.y,
             direction: PlayerDirection::Down,
             input_queue: VecDeque::new(),
@@ -66,15 +64,15 @@ impl Bunner {
                 let mut land = false;
                 if self.timer > 0 {
                     // Apply movement
-                    self.x += Self::dx(&self.direction);
-                    self.y += Self::dy(&self.direction);
+                    self.position.x += Self::dx(&self.direction);
+                    self.position.y += Self::dy(&self.direction);
                     self.timer -= 1;
                     // If timer reaches zero, we've just landed
                     land = self.timer == 0;
                 }
 
-                if let Some(current_row) = rows.iter_mut().find(|row| row.y() == self.y) {
-                    self.state = current_row.check_collision(self.x);
+                if let Some(current_row) = rows.iter_mut().find(|row| row.y() == self.position.y) {
+                    self.state = current_row.check_collision(self.position.x);
                     match self.state {
                         PlayerState::Alive => {
                             //self.x += current_row.push_bunner();
@@ -83,13 +81,13 @@ impl Bunner {
                             }
                         }
                         PlayerState::Splat(y_offset) => {
-                            self.y += y_offset;
+                            self.position.y += y_offset;
                             self.timer = 100;
                             current_row.children_mut().insert(
                                 0,
                                 ChildType::Splat(Splat::new(
                                     self.direction,
-                                    Position::new(self.x, y_offset),
+                                    Position::new(self.position.x, y_offset),
                                 )),
                             );
                             play_sound_once(storage::get::<Resources>().splat_sound);
@@ -97,15 +95,15 @@ impl Bunner {
                         _ => self.timer = 100,
                     }
                 } else {
-                    if self.y > scroll_pos + HEIGHT + 80 {
-                        self.state = PlayerState::Eagle(self.x);
+                    if self.position.y > scroll_pos + HEIGHT + 80 {
+                        self.state = PlayerState::Eagle(self.position.x);
                         self.timer = 150;
                         play_sound_once(storage::get::<Resources>().eagle_sound);
                     }
                 }
 
                 // Limit x position
-                self.x = 16.max((WIDTH - 16).min(self.x));
+                self.position.x = 16.max((WIDTH - 16).min(self.position.x));
             }
             _ => {
                 // Not alive - timer now counts down prior to game over screen
@@ -114,7 +112,7 @@ impl Bunner {
         }
 
         // Keep track of the furthest we've got in the level
-        self.min_y = self.min_y.min(self.y);
+        self.min_y = self.min_y.min(self.position.y);
 
         // Choose sprite image
         self.image = match self.state {
@@ -148,16 +146,18 @@ impl Bunner {
     }
 
     pub fn draw(&self, offset_x: i32, offset_y: i32) {
-        let x = (self.x + offset_x) as f32 - self.image.width() / 2.;
-        let y = (self.y + offset_y) as f32 - self.image.height();
+        let x = (self.position.x + offset_x) as f32 - self.image.width() / 2.;
+        let y = (self.position.y + offset_y) as f32 - self.image.height();
         draw_texture(self.image, x, y, WHITE);
     }
 
     pub fn handle_input(&mut self, direction: Option<PlayerDirection>, rows: &[Box<dyn Row>]) {
         if let Some(direction) = direction {
             for row in rows.iter() {
-                if row.y() == self.y + Self::MOVE_DISTANCE * Self::dy(&direction) {
-                    if row.allow_movement(self.x + Self::MOVE_DISTANCE * Self::dx(&direction)) {
+                if row.y() == self.position.y + Self::MOVE_DISTANCE * Self::dy(&direction) {
+                    if row.allow_movement(
+                        self.position.x + Self::MOVE_DISTANCE * Self::dx(&direction),
+                    ) {
                         self.direction = direction;
                         self.timer = Bunner::MOVE_DISTANCE;
                         play_sound_once(storage::get::<Resources>().jump_sound);

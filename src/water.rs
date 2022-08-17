@@ -1,4 +1,7 @@
-use crate::{child_type::ChildType, dirt::Dirt, resources::Resources, row::Row, ROW_HEIGHT};
+use crate::{
+    child_type::ChildType, dirt::Dirt, position::Position, resources::Resources, row::Row,
+    ROW_HEIGHT,
+};
 
 use macroquad::audio::play_sound_once;
 use macroquad::prelude::{collections::storage, debug, draw_texture, WHITE};
@@ -26,7 +29,7 @@ impl Row for Water {
         self.children.as_mut()
     }
 
-    fn update(&mut self, scroll_pos: i32) {
+    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {
         // TODO: super update
         // TODO: update logs
     }

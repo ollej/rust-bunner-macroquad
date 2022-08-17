@@ -1,11 +1,11 @@
-use crate::{child_type::ChildType, player_state::PlayerState, WIDTH};
+use crate::{child_type::ChildType, player_state::PlayerState, position::Position, WIDTH};
 
 pub trait Row {
     fn y(&self) -> i32;
     fn children(&self) -> &[ChildType];
     fn children_mut(&mut self) -> &mut Vec<ChildType>;
 
-    fn update(&mut self, scroll_pos: i32) {
+    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {
         self.update_children();
     }
 

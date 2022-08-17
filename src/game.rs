@@ -27,7 +27,8 @@ impl Game {
         if let Some(bunner) = &self.bunner {
             // Scroll faster if the player is close to the top of the screen. Limit scroll speed to
             // between 1 and 3 pixels per frame.
-            self.scroll_pos -= 1.max(3.min(self.scroll_pos + HEIGHT - bunner.y) / (HEIGHT / 4));
+            self.scroll_pos -=
+                1.max(3.min(self.scroll_pos + HEIGHT - bunner.position.y) / (HEIGHT / 4));
         } else {
             self.scroll_pos -= 1;
         }
@@ -48,7 +49,10 @@ impl Game {
         }
 
         for row in self.rows.iter_mut() {
-            row.update(self.scroll_pos);
+            row.update(
+                self.scroll_pos,
+                self.bunner.as_ref().map(|bunner| bunner.position),
+            );
         }
         if let Some(bunner) = self.bunner.as_mut() {
             bunner.update(self.scroll_pos, &mut self.rows);

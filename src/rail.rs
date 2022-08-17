@@ -28,7 +28,7 @@ impl Row for Rail {
         self.children.as_mut()
     }
 
-    fn update(&mut self, scroll_pos: i32) {
+    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {
         self.update_children();
         if self.index == 2 {
             self.children

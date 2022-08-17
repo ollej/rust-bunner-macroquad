@@ -1,5 +1,6 @@
 use crate::{
-    child_type::ChildType, grass::Grass, pavement::Pavement, player_state::PlayerState, rail::Rail,
+    actor::Actor, car::SoundIndex, car::TrafficSound, child_type::ChildType, grass::Grass,
+    mover::Mover, pavement::Pavement, player_state::PlayerState, position::Position, rail::Rail,
     resources::Resources, row::Row, ROW_HEIGHT, WIDTH,
 };
 
@@ -29,9 +30,34 @@ impl Row for Road {
         self.children.as_mut()
     }
 
-    fn update(&mut self, scroll_pos: i32) {
-        // TODO: super update
-        // TODO: Trigger sound effects
+    fn update(&mut self, scroll_pos: i32, bunner_pos: Option<Position>) {
+        self.update_children();
+        if let Some(bunner_pos) = bunner_pos {
+            for traffic_sound in Road::TRAFFIC_SOUNDS.iter() {
+                // Is the player on the appropriate row?
+                if bunner_pos.y == self.y + traffic_sound.y_offset {
+                    for child in self.children.iter_mut() {
+                        match child {
+                            ChildType::Car(car) => {
+                                // The car must be within 100 pixels of the player on the x-axis, and moving towards the player
+                                // child_obj.dx < 0 is True or False depending on whether the car is moving left or right, and
+                                // dx < 0 is True or False depending on whether the player is to the left or right of the car.
+                                // If the results of these two comparisons are different, the car is moving towards the player.
+                                // Also, for the zoom sound, the car must be travelling faster than one pixel per frame
+                                let dx = car.x() - bunner_pos.x;
+                                if dx.abs() < 100
+                                    && ((car.dx() < 0) != (dx < 0))
+                                    && (traffic_sound.y_offset == 0 || car.dx().abs() > 1)
+                                {
+                                    car.play_sound(traffic_sound.sound.clone());
+                                }
+                            }
+                            _ => (),
+                        };
+                    }
+                }
+            }
+        }
     }
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
@@ -103,6 +129,21 @@ impl Row for Road {
 }
 
 impl Road {
+    const TRAFFIC_SOUNDS: &'static [TrafficSound] = &[
+        TrafficSound {
+            y_offset: -ROW_HEIGHT,
+            sound: SoundIndex::Zoom,
+        },
+        TrafficSound {
+            y_offset: 0,
+            sound: SoundIndex::Honk,
+        },
+        TrafficSound {
+            y_offset: ROW_HEIGHT,
+            sound: SoundIndex::Zoom,
+        },
+    ];
+
     pub fn new(previous_dx: i32, index: i32, y: i32) -> Self {
         Self {
             dx: 0,
