@@ -5,8 +5,8 @@ use macroquad::prelude::{
 use std::collections::VecDeque;
 
 use crate::{
-    player_direction::PlayerDirection, player_state::PlayerState, position::Position,
-    resources::Resources, row::Row, HEIGHT, WIDTH,
+    child_type::ChildType, player_direction::PlayerDirection, player_state::PlayerState,
+    position::Position, resources::Resources, row::Row, splat::Splat, HEIGHT, WIDTH,
 };
 
 pub struct Bunner {
@@ -36,7 +36,7 @@ impl Bunner {
         }
     }
 
-    pub fn update(&mut self, scroll_pos: i32, rows: &mut Vec<Box<dyn Row>>) {
+    pub fn update(&mut self, scroll_pos: i32, rows: &mut [Box<dyn Row>]) {
         if let Some(direction) = get_last_key_pressed()
             .map(|d| match d {
                 KeyCode::Up => Some(PlayerDirection::Up),
@@ -73,12 +73,7 @@ impl Bunner {
                     land = self.timer == 0;
                 }
 
-                if let Some(current_row) = rows
-                    .iter()
-                    .filter(|row| row.y() == self.y)
-                    .collect::<Vec<&Box<dyn Row>>>()
-                    .first()
-                {
+                if let Some(current_row) = rows.iter_mut().find(|row| row.y() == self.y) {
                     self.state = current_row.check_collision(self.x);
                     match self.state {
                         PlayerState::Alive => {
@@ -90,6 +85,13 @@ impl Bunner {
                         PlayerState::Splat(y_offset) => {
                             self.y += y_offset;
                             self.timer = 100;
+                            current_row.children_mut().insert(
+                                0,
+                                ChildType::Splat(Splat::new(
+                                    self.direction,
+                                    Position::new(self.x, y_offset),
+                                )),
+                            );
                             play_sound_once(storage::get::<Resources>().splat_sound);
                         }
                         _ => self.timer = 100,
@@ -141,10 +143,6 @@ impl Bunner {
                     .get(splash_index)
                     .unwrap()
             }
-            PlayerState::Splat(_) => *storage::get::<Resources>()
-                .splat_textures
-                .get(self.direction as usize)
-                .unwrap(),
             _ => storage::get::<Resources>().blank_texture,
         };
     }
