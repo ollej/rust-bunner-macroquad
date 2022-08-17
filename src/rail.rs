@@ -85,7 +85,6 @@ impl Row for Rail {
 
     fn check_collision(&self, x: i32) -> PlayerState {
         if self.index == 2 && self.collide(x, 0) {
-            play_sound_once(storage::get::<Resources>().splat_sound);
             return PlayerState::Splat(8);
         }
         PlayerState::Alive
