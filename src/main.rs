@@ -10,11 +10,15 @@
 
 use macroquad::{
     audio::{self},
-    prelude::{next_frame, Conf},
+    prelude::{get_last_key_pressed, next_frame, Conf},
+    time::get_frame_time,
 };
 
-use bunner_macroquad::{global_state::GlobalState, resources::Resources, HEIGHT, TITLE, WIDTH};
+use bunner_macroquad::{
+    global_state::GlobalState, resources::Resources, HEIGHT, TIME_PER_FRAME, TITLE, WIDTH,
+};
 
+use std::collections::VecDeque;
 use std::error;
 
 fn window_conf() -> Conf {
@@ -36,8 +40,18 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
     let mut global_state = GlobalState::new(music);
     global_state.init();
 
+    let mut frame_time: f32 = 0.;
+    let mut input_queue = VecDeque::new();
     loop {
-        global_state.update();
+        if let Some(key_code) = get_last_key_pressed() {
+            input_queue.push_back(key_code);
+        }
+        frame_time += get_frame_time().min(0.25);
+        while frame_time >= TIME_PER_FRAME {
+            global_state.update(input_queue.clone());
+            input_queue.clear();
+            frame_time -= TIME_PER_FRAME;
+        }
         global_state.draw();
 
         next_frame().await

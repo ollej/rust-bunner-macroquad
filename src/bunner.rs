@@ -34,19 +34,25 @@ impl Bunner {
         }
     }
 
-    pub fn update(&mut self, scroll_pos: i32, rows: &mut [Box<dyn Row>]) {
-        if let Some(direction) = get_last_key_pressed()
-            .map(|d| match d {
-                KeyCode::Up => Some(PlayerDirection::Up),
-                KeyCode::Right => Some(PlayerDirection::Right),
-                KeyCode::Down => Some(PlayerDirection::Down),
-                KeyCode::Left => Some(PlayerDirection::Left),
-                _ => None,
-            })
-            .flatten()
-        {
-            self.input_queue.push_back(direction);
-        }
+    pub fn update(
+        &mut self,
+        scroll_pos: i32,
+        rows: &mut [Box<dyn Row>],
+        input_queue: VecDeque<KeyCode>,
+    ) {
+        self.input_queue.append(
+            &mut input_queue
+                .iter()
+                .map(|d| match d {
+                    KeyCode::Up => Some(PlayerDirection::Up),
+                    KeyCode::Right => Some(PlayerDirection::Right),
+                    KeyCode::Down => Some(PlayerDirection::Down),
+                    KeyCode::Left => Some(PlayerDirection::Left),
+                    _ => None,
+                })
+                .flatten()
+                .collect::<VecDeque<PlayerDirection>>(),
+        );
 
         match self.state {
             PlayerState::Alive => {

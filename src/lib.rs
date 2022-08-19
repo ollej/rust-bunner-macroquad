@@ -32,3 +32,4 @@ pub const HEIGHT: i32 = 800;
 pub const TITLE: &str = "Bunner Macroquad";
 pub const ROW_HEIGHT: i32 = 40;
 pub const TILE_WIDTH: i32 = 40;
+pub const TIME_PER_FRAME: f32 = 1. / 60.;

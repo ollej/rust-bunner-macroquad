@@ -2,8 +2,9 @@ use crate::{
     actor::Actor, bunner::Bunner, eagle::Eagle, grass::Grass, player_state::PlayerState,
     position::Position, row::Row, HEIGHT, ROW_HEIGHT,
 };
+use std::collections::VecDeque;
 
-use macroquad::prelude::{clear_background, BLACK};
+use macroquad::prelude::{clear_background, KeyCode, BLACK};
 
 #[derive(Default)]
 pub struct Game {
@@ -23,7 +24,7 @@ impl Game {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, input_queue: VecDeque<KeyCode>) {
         if let Some(bunner) = &self.bunner {
             // Scroll faster if the player is close to the top of the screen. Limit scroll speed to
             // between 1 and 3 pixels per frame.
@@ -55,7 +56,7 @@ impl Game {
             );
         }
         if let Some(bunner) = self.bunner.as_mut() {
-            bunner.update(self.scroll_pos, &mut self.rows);
+            bunner.update(self.scroll_pos, &mut self.rows, input_queue);
             match bunner.state {
                 PlayerState::Eagle(x) => {
                     self.eagle

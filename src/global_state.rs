@@ -2,12 +2,14 @@ use macroquad::audio::{play_sound, set_sound_volume, PlaySoundParams, Sound};
 use macroquad::prelude::{
     collections::storage, draw_texture, is_key_pressed, rand, KeyCode, WHITE,
 };
+use std::collections::VecDeque;
 use std::fs;
 
 use crate::{
     bunner::Bunner,
     drawing::{display_number, NumberAlign, NumberColor},
     game::Game,
+    player_direction::PlayerDirection,
     position::Position,
     resources::Resources,
     state::State,
@@ -49,16 +51,16 @@ impl GlobalState {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, input_queue: VecDeque<KeyCode>) {
         match self.state {
             State::Menu => {
-                if is_key_pressed(KeyCode::Space) {
+                if input_queue.contains(&KeyCode::Space) {
                     // Switch to play state, and create a new Game object, passing it a new Player object to use
                     self.state = State::Play;
                     self.game = Game::new(Some(Bunner::new(Position::new(240, -320))));
                     set_sound_volume(self.music, 0.3);
                 } else {
-                    self.game.update();
+                    self.game.update(input_queue);
                 }
             }
             State::Play => {
@@ -71,11 +73,11 @@ impl GlobalState {
 
                     self.state = State::GameOver;
                 } else {
-                    self.game.update();
+                    self.game.update(input_queue);
                 }
             }
             State::GameOver => {
-                if is_key_pressed(KeyCode::Space) {
+                if input_queue.contains(&KeyCode::Space) {
                     // Switch to menu state, and create a new game object
                     self.state = State::Menu;
                     self.game = Game::new(None);
