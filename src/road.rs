@@ -1,5 +1,5 @@
 use crate::{
-    actor::Actor, car::Car, car::SoundIndex, car::TrafficSound, child::Child, grass::Grass,
+    actor::Actor, car::Car, car::CarSound, car::TrafficSound, child::Child, grass::Grass,
     mover::Mover, pavement::Pavement, player_state::PlayerState, position::Position, rail::Rail,
     resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
 };
@@ -47,7 +47,7 @@ impl Row for Road {
         }
 
         if let Some(bunner_pos) = bunner_pos {
-            for traffic_sound in Road::TRAFFIC_SOUNDS.iter() {
+            for traffic_sound in Road::CAR_SOUNDS.iter() {
                 // Is the player on the appropriate row?
                 if bunner_pos.y == self.y + traffic_sound.y_offset {
                     for child in self.children.iter_mut() {
@@ -141,18 +141,18 @@ impl Row for Road {
 }
 
 impl Road {
-    const TRAFFIC_SOUNDS: &'static [TrafficSound] = &[
+    const CAR_SOUNDS: &'static [TrafficSound] = &[
         TrafficSound {
             y_offset: -ROW_HEIGHT,
-            sound: SoundIndex::Zoom,
+            sound: CarSound::Zoom,
         },
         TrafficSound {
             y_offset: 0,
-            sound: SoundIndex::Honk,
+            sound: CarSound::Honk,
         },
         TrafficSound {
             y_offset: ROW_HEIGHT,
-            sound: SoundIndex::Zoom,
+            sound: CarSound::Zoom,
         },
     ];
     const DXS: &'static [i32] = &[-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];

@@ -10,7 +10,7 @@ pub struct Car {
     dx: i32,
     position: Position,
     image_index: usize,
-    played_sounds: HashSet<SoundIndex>,
+    played_sounds: HashSet<CarSound>,
 }
 
 impl Mover for Car {
@@ -65,15 +65,15 @@ impl Car {
         }
     }
 
-    pub fn play_sound(&mut self, sound: SoundIndex) {
+    pub fn play_sound(&mut self, sound: CarSound) {
         if self.played_sounds.insert(sound.clone()) {
             match sound {
-                SoundIndex::Zoom => {
-                    let rnd = rand::gen_range(0, SoundIndex::Zoom as usize);
+                CarSound::Zoom => {
+                    let rnd = rand::gen_range::<usize>(0, 6);
                     play_sound_once(storage::get::<Resources>().zoom_sounds[rnd]);
                 }
-                SoundIndex::Honk => {
-                    let rnd = rand::gen_range(0, SoundIndex::Honk as usize);
+                CarSound::Honk => {
+                    let rnd = rand::gen_range::<usize>(0, 4);
                     play_sound_once(storage::get::<Resources>().honk_sounds[rnd]);
                 }
             }
@@ -82,18 +82,18 @@ impl Car {
 }
 
 #[derive(Hash, Eq, PartialEq, Debug, Clone)]
-pub enum SoundIndex {
-    Zoom = 6,
-    Honk = 4,
+pub enum CarSound {
+    Zoom,
+    Honk,
 }
 
 pub struct TrafficSound {
     pub y_offset: i32,
-    pub sound: SoundIndex,
+    pub sound: CarSound,
 }
 
 impl TrafficSound {
-    pub fn new(y_offset: i32, sound: SoundIndex) -> Self {
+    pub fn new(y_offset: i32, sound: CarSound) -> Self {
         TrafficSound { y_offset, sound }
     }
 }
