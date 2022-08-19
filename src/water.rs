@@ -1,6 +1,6 @@
 use crate::{
     child::Child, dirt::Dirt, log::Log, player_state::PlayerState, position::Position,
-    resources::Resources, row::Row, ROW_HEIGHT, WIDTH,
+    resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -81,6 +81,10 @@ impl Row for Water {
 
     fn push(&self) -> i32 {
         self.dx
+    }
+
+    fn sound(&self) -> Option<RowSound> {
+        Some(RowSound::River)
     }
 }
 

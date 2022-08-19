@@ -138,7 +138,7 @@ impl Resources {
         let sidewalk_sound = audio::load_sound("resources/sounds/sidewalk0.wav").await?;
         let splash_sound = audio::load_sound("resources/sounds/splash0.wav").await?;
         let splat_sound = audio::load_sound("resources/sounds/splat0.wav").await?;
-        let traffic_sounds = load_sounds_list("traffic", 2, "ogg").await?;
+        let traffic_sounds = load_sounds_list("traffic", 3, "ogg").await?;
         let train_sounds = load_sounds_list("train", 2, "wav").await?;
         let zoom_sounds = load_sounds_list("zoom", 6, "wav").await?;
 

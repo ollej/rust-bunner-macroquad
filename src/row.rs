@@ -49,4 +49,14 @@ pub trait Row {
     fn push(&self) -> i32 {
         0
     }
+
+    fn sound(&self) -> Option<RowSound> {
+        None
+    }
+}
+
+#[derive(Eq, Hash, PartialEq, Copy, Clone)]
+pub enum RowSound {
+    Traffic,
+    River,
 }

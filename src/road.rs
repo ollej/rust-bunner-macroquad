@@ -1,7 +1,7 @@
 use crate::{
     actor::Actor, car::Car, car::SoundIndex, car::TrafficSound, child::Child, grass::Grass,
     mover::Mover, pavement::Pavement, player_state::PlayerState, position::Position, rail::Rail,
-    resources::Resources, row::Row, ROW_HEIGHT, WIDTH,
+    resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
 };
 
 use macroquad::audio::play_sound_once;
@@ -133,6 +133,10 @@ impl Row for Road {
 
     fn push(&self) -> i32 {
         0
+    }
+
+    fn sound(&self) -> Option<RowSound> {
+        Some(RowSound::Traffic)
     }
 }
 

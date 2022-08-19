@@ -1,10 +1,14 @@
 use crate::{
     actor::Actor, bunner::Bunner, eagle::Eagle, grass::Grass, player_state::PlayerState,
-    position::Position, row::Row, HEIGHT, ROW_HEIGHT,
+    position::Position, resources::Resources, row::Row, row::RowSound, HEIGHT, ROW_HEIGHT,
 };
-use std::collections::VecDeque;
+use std::collections::{HashMap, HashSet, VecDeque};
 
-use macroquad::prelude::{clear_background, KeyCode, BLACK};
+use macroquad::{
+    audio::{play_sound, set_sound_volume, stop_sound, PlaySoundParams},
+    prelude::{clear_background, collections::storage, KeyCode, BLACK},
+    rand::gen_range,
+};
 
 #[derive(Default)]
 pub struct Game {
@@ -12,6 +16,7 @@ pub struct Game {
     pub scroll_pos: i32,
     eagle: Option<Eagle>,
     rows: Vec<Box<dyn Row>>,
+    looped_sounds: HashSet<RowSound>,
 }
 
 impl Game {
@@ -21,6 +26,7 @@ impl Game {
             scroll_pos: -HEIGHT,
             eagle: None,
             rows: vec![Box::new(Grass::without_hedge(0, 0))],
+            looped_sounds: HashSet::new(),
         }
     }
 
@@ -69,7 +75,19 @@ impl Game {
             eagle.update();
         }
 
-        // TODO: Play river/traffic sounds
+        if let Some(bunner) = &self.bunner {
+            let mut sounds: HashMap<RowSound, f32> = HashMap::new();
+            for row in self.rows.iter() {
+                if let Some(sound_name) = row.sound() {
+                    let volume = sounds.get(&sound_name).unwrap_or(&0.)
+                        + 16.0 / 16.0_f32.max((row.y() - bunner.position.y).abs() as f32);
+                    sounds.insert(sound_name, volume);
+                }
+            }
+            for (sound, volume) in sounds.drain() {
+                self.loop_sound(sound, volume - 0.2);
+            }
+        }
     }
 
     pub fn draw(&self) {
@@ -99,6 +117,37 @@ impl Game {
             0.max((-320 - bunner.min_y as i32) / 40) as u32
         } else {
             0
+        }
+    }
+
+    fn loop_sound(&mut self, row_sound: RowSound, volume: f32) {
+        let sound = match row_sound {
+            RowSound::River => *storage::get::<Resources>()
+                .river_sounds
+                .get(gen_range::<usize>(0, 2))
+                .unwrap(),
+            RowSound::Traffic => *storage::get::<Resources>()
+                .traffic_sounds
+                .get(gen_range::<usize>(0, 3))
+                .unwrap(),
+        };
+        if volume > 0. && self.looped_sounds.insert(row_sound) {
+            play_sound(
+                sound,
+                PlaySoundParams {
+                    looped: true,
+                    volume,
+                },
+            );
+        }
+
+        if self.looped_sounds.contains(&row_sound) {
+            if volume > 0. {
+                set_sound_volume(sound, volume);
+            } else {
+                stop_sound(sound);
+                self.looped_sounds.remove(&row_sound);
+            }
         }
     }
 }
