@@ -10,7 +10,7 @@
 
 use macroquad::{
     audio::{self},
-    input::utils::*,
+    input::{is_key_pressed, utils::*, KeyCode},
     prelude::{next_frame, Conf},
     time::get_frame_time,
 };
@@ -43,6 +43,9 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
     let input_subscriber = register_input_subscriber();
     let mut frame_time: f32 = 0.;
     loop {
+        if is_key_pressed(KeyCode::Escape) || is_key_pressed(KeyCode::Q) {
+            std::process::exit(0);
+        }
         repeat_all_miniquad_input(&mut global_state, input_subscriber);
         frame_time += get_frame_time().min(0.25);
         while frame_time >= TIME_PER_FRAME {
