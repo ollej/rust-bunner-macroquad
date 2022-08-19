@@ -1,7 +1,5 @@
 use macroquad::audio::play_sound_once;
-use macroquad::prelude::{
-    collections::storage, draw_texture, get_last_key_pressed, KeyCode, Texture2D, WHITE,
-};
+use macroquad::prelude::{collections::storage, draw_texture, KeyCode, Texture2D, WHITE};
 use std::collections::VecDeque;
 
 use crate::{

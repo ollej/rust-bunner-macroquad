@@ -1,7 +1,5 @@
 use macroquad::audio::{play_sound, set_sound_volume, PlaySoundParams, Sound};
-use macroquad::prelude::{
-    collections::storage, draw_texture, is_key_pressed, rand, KeyCode, WHITE,
-};
+use macroquad::prelude::{collections::storage, draw_texture, miniquad, rand, KeyCode, WHITE};
 use std::collections::VecDeque;
 use std::fs;
 
@@ -9,7 +7,6 @@ use crate::{
     bunner::Bunner,
     drawing::{display_number, NumberAlign, NumberColor},
     game::Game,
-    player_direction::PlayerDirection,
     position::Position,
     resources::Resources,
     state::State,
@@ -21,6 +18,23 @@ pub struct GlobalState {
     game: Game,
     high_score: u32,
     music: Sound,
+    input_queue: VecDeque<KeyCode>,
+}
+
+impl miniquad::EventHandler for GlobalState {
+    fn update(&mut self, _ctx: &mut miniquad::Context) {}
+
+    fn draw(&mut self, _ctx: &mut miniquad::Context) {}
+
+    fn key_down_event(
+        &mut self,
+        _ctx: &mut miniquad::Context,
+        keycode: KeyCode,
+        _keymods: miniquad::KeyMods,
+        _repeat: bool,
+    ) {
+        self.input_queue.push_back(keycode);
+    }
 }
 
 impl GlobalState {
@@ -31,6 +45,7 @@ impl GlobalState {
             game: Game::new(None),
             high_score: 0,
             music,
+            input_queue: VecDeque::new(),
         }
     }
 
@@ -51,16 +66,16 @@ impl GlobalState {
         }
     }
 
-    pub fn update(&mut self, input_queue: VecDeque<KeyCode>) {
+    pub fn update(&mut self) {
         match self.state {
             State::Menu => {
-                if input_queue.contains(&KeyCode::Space) {
+                if self.input_queue.contains(&KeyCode::Space) {
                     // Switch to play state, and create a new Game object, passing it a new Player object to use
                     self.state = State::Play;
                     self.game = Game::new(Some(Bunner::new(Position::new(240, -320))));
                     set_sound_volume(self.music, 0.3);
                 } else {
-                    self.game.update(input_queue);
+                    self.game.update(self.input_queue.clone());
                 }
             }
             State::Play => {
@@ -73,11 +88,11 @@ impl GlobalState {
 
                     self.state = State::GameOver;
                 } else {
-                    self.game.update(input_queue);
+                    self.game.update(self.input_queue.clone());
                 }
             }
             State::GameOver => {
-                if input_queue.contains(&KeyCode::Space) {
+                if self.input_queue.contains(&KeyCode::Space) {
                     // Switch to menu state, and create a new game object
                     self.state = State::Menu;
                     self.game = Game::new(None);
@@ -85,6 +100,7 @@ impl GlobalState {
                 }
             }
         }
+        self.input_queue.clear();
     }
 
     pub fn draw(&mut self) {
