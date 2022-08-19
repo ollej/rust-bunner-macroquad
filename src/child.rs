@@ -31,22 +31,22 @@ impl Child {
     }
 
     pub fn x(&self) -> i32 {
-        return match self {
+        match self {
             Child::Hedge(hedge) => hedge.x(),
             Child::Train(train) => train.x(),
             Child::Splat(splat) => splat.x(),
             Child::Car(car) => car.x(),
             Child::Log(log) => log.x(),
-        };
+        }
     }
 
     pub fn width(&self) -> i32 {
-        return match self {
+        match self {
             Child::Hedge(hedge) => hedge.width(),
             Child::Train(train) => train.width(),
             Child::Splat(splat) => splat.width(),
             Child::Car(car) => car.width(),
             Child::Log(log) => log.width(),
-        };
+        }
     }
 }

@@ -62,12 +62,9 @@ impl Game {
         }
         if let Some(bunner) = self.bunner.as_mut() {
             bunner.update(self.scroll_pos, &mut self.rows, input_queue);
-            match bunner.state {
-                PlayerState::Eagle(x) => {
-                    self.eagle
-                        .get_or_insert_with(|| Eagle::new(Position::new(x, self.scroll_pos)));
-                }
-                _ => (),
+            if let PlayerState::Eagle(x) = bunner.state {
+                self.eagle
+                    .get_or_insert_with(|| Eagle::new(Position::new(x, self.scroll_pos)));
             };
         }
         if let Some(eagle) = self.eagle.as_mut() {

@@ -92,7 +92,7 @@ impl Row for Water {
 impl Water {
     pub fn new(previous_dx: i32, index: i32, y: i32) -> Self {
         let dx = if previous_dx >= 0 {
-            rand::gen_range(1, 3) * -1
+            -rand::gen_range(1, 3)
         } else {
             rand::gen_range(1, 3)
         };

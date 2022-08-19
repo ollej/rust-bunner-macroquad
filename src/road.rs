@@ -52,22 +52,19 @@ impl Row for Road {
                 // Is the player on the appropriate row?
                 if bunner_pos.y == self.y + traffic_sound.y_offset {
                     for child in self.children.iter_mut() {
-                        match child {
-                            Child::Car(car) => {
-                                // The car must be within 100 pixels of the player on the x-axis, and moving towards the player
-                                // child_obj.dx < 0 is True or False depending on whether the car is moving left or right, and
-                                // dx < 0 is True or False depending on whether the player is to the left or right of the car.
-                                // If the results of these two comparisons are different, the car is moving towards the player.
-                                // Also, for the zoom sound, the car must be travelling faster than one pixel per frame
-                                let dx = car.x() - bunner_pos.x;
-                                if dx.abs() < 100
-                                    && ((car.dx() < 0) != (dx < 0))
-                                    && (traffic_sound.y_offset == 0 || car.dx().abs() > 1)
-                                {
-                                    car.play_sound(traffic_sound.sound.clone());
-                                }
+                        if let Child::Car(car) = child {
+                            // The car must be within 100 pixels of the player on the x-axis, and moving towards the player
+                            // child_obj.dx < 0 is True or False depending on whether the car is moving left or right, and
+                            // dx < 0 is True or False depending on whether the player is to the left or right of the car.
+                            // If the results of these two comparisons are different, the car is moving towards the player.
+                            // Also, for the zoom sound, the car must be travelling faster than one pixel per frame
+                            let dx = car.x() - bunner_pos.x;
+                            if dx.abs() < 100
+                                && ((car.dx() < 0) != (dx < 0))
+                                && (traffic_sound.y_offset == 0 || car.dx().abs() > 1)
+                            {
+                                car.play_sound(traffic_sound.sound.clone());
                             }
-                            _ => (),
                         };
                     }
                 }
@@ -121,7 +118,7 @@ impl Row for Road {
     }
 
     fn allow_movement(&self, x: i32) -> bool {
-        x >= 16 && x <= WIDTH - 16 && !self.collide(x, 8)
+        (16..=WIDTH - 16).contains(&x) && !self.collide(x, 8)
     }
 
     fn check_collision(&self, x: i32) -> PlayerState {
@@ -161,7 +158,7 @@ impl Road {
     pub fn new(previous_dx: i32, index: i32, y: i32) -> Self {
         // Populate the row with child objects (cars or logs). Without this, the row would initially be empty.
         let dx = **Self::DXS
-            .into_iter()
+            .iter()
             .filter(|&dx| *dx != previous_dx)
             .collect::<Vec<&i32>>()
             .choose()
@@ -178,11 +175,11 @@ impl Road {
             children.push(Child::Car(Car::new(dx, pos)));
         }
         Self {
-            dx: dx,
+            dx,
             timer: 0.,
             index,
             y,
-            children: children,
+            children,
         }
     }
 

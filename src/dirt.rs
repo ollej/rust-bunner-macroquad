@@ -54,12 +54,10 @@ impl Row for Dirt {
             Box::new(Dirt::new(15, y))
         } else if self.index >= 8 && self.index <= 14 {
             Box::new(Dirt::new(self.index + 1, y))
+        } else if rand::gen_range::<u8>(0, 2) == 1 {
+            Box::new(Road::empty(y))
         } else {
-            if rand::gen_range::<u8>(0, 2) == 1 {
-                Box::new(Road::empty(y))
-            } else {
-                Box::new(Water::empty(y))
-            }
+            Box::new(Water::empty(y))
         }
     }
 }

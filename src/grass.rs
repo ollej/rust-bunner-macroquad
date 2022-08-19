@@ -56,17 +56,15 @@ impl Row for Grass {
             self.grass_row(15, y)
         } else if self.index >= 8 && self.index <= 14 {
             self.grass_row(self.index + 1, y)
+        } else if rand::gen_range::<u8>(0, 2) == 0 {
+            Box::new(Road::empty(y))
         } else {
-            if rand::gen_range::<u8>(0, 2) == 0 {
-                Box::new(Road::empty(y))
-            } else {
-                Box::new(Water::empty(y))
-            }
+            Box::new(Water::empty(y))
         }
     }
 
     fn allow_movement(&self, x: i32) -> bool {
-        x >= 16 && x <= WIDTH - 16 && !self.collide(x, 8)
+        (16..=WIDTH - 16).contains(&x) && !self.collide(x, 8)
     }
 
     fn push(&self) -> i32 {
@@ -178,12 +176,11 @@ impl Grass {
             //    i, low_index, high_index, new_mask
             //);
             new_mask.push(
-                if &mask[low_index..=high_index]
+                if mask[low_index..=high_index]
                     .iter()
                     .filter(|&&item| item == HedgeMask::Empty)
-                    .collect::<Vec<&HedgeMask>>()
-                    .len()
-                    > &0
+                    .count()
+                    > 0
                 {
                     HedgeMask::Empty
                 } else {
@@ -194,7 +191,7 @@ impl Grass {
 
         // Duplicate first and last elements
         let mut mask = Vec::new();
-        mask.push(new_mask.get(0).unwrap().clone());
+        mask.push(*new_mask.get(0).unwrap());
         mask.extend(new_mask.clone());
         mask.push(new_mask.pop().unwrap());
 

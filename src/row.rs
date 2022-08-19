@@ -32,7 +32,7 @@ pub trait Row {
     }
 
     fn allow_movement(&self, x: i32) -> bool {
-        x >= 16 && x <= WIDTH - 16
+        (16..=WIDTH - 16).contains(&x)
     }
 
     fn collide(&self, x: i32, margin: i32) -> bool {

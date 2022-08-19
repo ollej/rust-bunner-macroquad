@@ -42,14 +42,13 @@ impl Bunner {
         self.input_queue.append(
             &mut input_queue
                 .iter()
-                .map(|d| match d {
+                .filter_map(|d| match d {
                     KeyCode::Up => Some(PlayerDirection::Up),
                     KeyCode::Right => Some(PlayerDirection::Right),
                     KeyCode::Down => Some(PlayerDirection::Down),
                     KeyCode::Left => Some(PlayerDirection::Left),
                     _ => None,
                 })
-                .flatten()
                 .collect::<VecDeque<PlayerDirection>>(),
         );
 
@@ -103,12 +102,10 @@ impl Bunner {
                         }
                         _ => self.timer = 100,
                     }
-                } else {
-                    if self.position.y > scroll_pos + HEIGHT + 80 {
-                        self.state = PlayerState::Eagle(self.position.x);
-                        self.timer = 150;
-                        play_sound_once(storage::get::<Resources>().eagle_sound);
-                    }
+                } else if self.position.y > scroll_pos + HEIGHT + 80 {
+                    self.state = PlayerState::Eagle(self.position.x);
+                    self.timer = 150;
+                    play_sound_once(storage::get::<Resources>().eagle_sound);
                 }
 
                 // Limit x position

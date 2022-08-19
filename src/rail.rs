@@ -74,12 +74,10 @@ impl Row for Rail {
         let y = self.y - ROW_HEIGHT;
         if self.index < 3 {
             Box::new(Rail::new(self.index + 1, y))
+        } else if rand::gen_range::<u8>(0, 2) == 0 {
+            Box::new(Road::empty(y))
         } else {
-            if rand::gen_range::<u8>(0, 2) == 0 {
-                Box::new(Road::empty(y))
-            } else {
-                Box::new(Water::empty(y))
-            }
+            Box::new(Water::empty(y))
         }
     }
 
