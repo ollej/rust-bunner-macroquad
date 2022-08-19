@@ -1,8 +1,3 @@
-use macroquad::audio::{play_sound, set_sound_volume, PlaySoundParams, Sound};
-use macroquad::prelude::{collections::storage, draw_texture, miniquad, rand, KeyCode, WHITE};
-use std::collections::VecDeque;
-use std::fs;
-
 use crate::{
     bunner::Bunner,
     drawing::{display_number, NumberAlign, NumberColor},
@@ -11,6 +6,14 @@ use crate::{
     resources::Resources,
     state::State,
     HEIGHT, WIDTH,
+};
+use macroquad::{
+    audio::{play_sound, set_sound_volume, PlaySoundParams, Sound},
+    prelude::{collections::storage, draw_texture, miniquad, rand, KeyCode, WHITE},
+};
+use std::{
+    collections::VecDeque,
+    fs::{self},
 };
 
 pub struct GlobalState {

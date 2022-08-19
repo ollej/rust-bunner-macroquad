@@ -1,6 +1,8 @@
 use crate::{actor::Actor, position::Position, resources::Resources};
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
-use macroquad::rand::ChooseRandom;
+use macroquad::{
+    prelude::{collections::storage, draw_texture, WHITE},
+    rand::ChooseRandom,
+};
 
 #[derive(Clone)]
 pub struct Train {

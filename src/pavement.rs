@@ -1,7 +1,8 @@
 use crate::{child::Child, resources::Resources, road::Road, row::Row, ROW_HEIGHT};
-
-use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
+use macroquad::{
+    audio::play_sound_once,
+    prelude::{collections::storage, draw_texture, WHITE},
+};
 
 #[derive(Clone)]
 pub struct Pavement {

@@ -1,11 +1,12 @@
-use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, draw_texture, KeyCode, Texture2D, WHITE};
-use std::collections::VecDeque;
-
 use crate::{
     child::Child, player_direction::PlayerDirection, player_state::PlayerState, position::Position,
     resources::Resources, row::Row, splat::Splat, HEIGHT, WIDTH,
 };
+use macroquad::{
+    audio::play_sound_once,
+    prelude::{collections::storage, draw_texture, KeyCode, Texture2D, WHITE},
+};
+use std::collections::VecDeque;
 
 pub struct Bunner {
     pub state: PlayerState,

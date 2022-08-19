@@ -4,10 +4,11 @@ use crate::{
     resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
 };
 
-use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
-use macroquad::rand;
-use macroquad::rand::ChooseRandom;
+use macroquad::{
+    audio::play_sound_once,
+    prelude::{collections::storage, draw_texture, WHITE},
+    rand::{self, ChooseRandom},
+};
 
 #[derive(Clone)]
 pub struct Road {

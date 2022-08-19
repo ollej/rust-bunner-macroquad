@@ -1,6 +1,5 @@
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
-
 use crate::resources::Resources;
+use macroquad::prelude::{collections::storage, draw_texture, WHITE};
 
 pub enum NumberAlign {
     Left,

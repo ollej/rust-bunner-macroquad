@@ -2,10 +2,11 @@ use crate::{
     child::Child, position::Position, resources::Resources, road::Road, row::Row, water::Water,
     ROW_HEIGHT,
 };
-
-use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
-use macroquad::rand;
+use macroquad::{
+    audio::play_sound_once,
+    prelude::{collections::storage, draw_texture, WHITE},
+    rand::{self},
+};
 
 #[derive(Clone)]
 pub struct Dirt {

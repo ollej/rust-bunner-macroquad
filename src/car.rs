@@ -1,8 +1,9 @@
 use crate::{actor::Actor, mover::Mover, position::Position, resources::Resources};
-use macroquad::audio::play_sound_once;
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
-use macroquad::rand;
-use macroquad::rand::ChooseRandom;
+use macroquad::{
+    audio::play_sound_once,
+    prelude::{collections::storage, draw_texture, WHITE},
+    rand::{self, ChooseRandom},
+};
 use std::collections::HashSet;
 
 #[derive(Clone)]

@@ -1,6 +1,8 @@
 use crate::{actor::Actor, mover::Mover, position::Position, resources::Resources};
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
-use macroquad::rand::gen_range;
+use macroquad::{
+    prelude::{collections::storage, draw_texture, WHITE},
+    rand::gen_range,
+};
 
 #[derive(Clone)]
 pub struct Log {

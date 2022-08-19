@@ -2,13 +2,12 @@ use crate::{
     actor::Actor, bunner::Bunner, eagle::Eagle, grass::Grass, player_state::PlayerState,
     position::Position, resources::Resources, row::Row, row::RowSound, HEIGHT, ROW_HEIGHT,
 };
-use std::collections::{HashMap, HashSet, VecDeque};
-
 use macroquad::{
     audio::{play_sound, set_sound_volume, stop_sound, PlaySoundParams},
     prelude::{clear_background, collections::storage, KeyCode, BLACK},
     rand::gen_range,
 };
+use std::collections::{HashMap, HashSet, VecDeque};
 
 #[derive(Default)]
 pub struct Game {

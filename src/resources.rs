@@ -1,12 +1,11 @@
 // Rust: The data should be loaded from the on-disk list of files, rather than each type individually.
 // The file naming actually helps, since "map" textures don't have an index.
 
-use std::error;
-
 use macroquad::{
     audio::{self, load_sound, Sound},
     prelude::{collections::storage, coroutines::start_coroutine, load_texture, Texture2D, *},
 };
+use std::error;
 
 // Async blocks are (as of Jun/2021) unstable, so cycles are used where required.
 //
