@@ -11,10 +11,9 @@ use macroquad::{
     audio::{play_sound, set_sound_volume, PlaySoundParams, Sound},
     prelude::{collections::storage, draw_texture, miniquad, rand, KeyCode, WHITE},
 };
-use std::{
-    collections::VecDeque,
-    fs::{self},
-};
+use std::collections::VecDeque;
+#[cfg(not(target_arch = "wasm32"))]
+use std::fs;
 
 pub struct GlobalState {
     state: State,
