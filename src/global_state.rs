@@ -114,14 +114,15 @@ impl GlobalState {
             State::Menu => {
                 // Draw title screen
                 draw_texture(resources.title_texture, 0., 0., WHITE);
-                //let screen = (self.game.scroll_pos / 6 % 4) as usize;
-                let screen = 0;
-                draw_texture(
-                    resources.start_textures[screen],
-                    (WIDTH - 270) as f32 / 2.,
-                    (HEIGHT - 240) as f32,
-                    WHITE,
-                );
+                let index: usize = ((self.game.scroll_pos.abs() / 6) % 4) as usize;
+                if let Some(start_index) = [0, 1, 2, 1].get(index) {
+                    draw_texture(
+                        resources.start_textures[*start_index],
+                        (WIDTH - 270) as f32 / 2.,
+                        (HEIGHT - 240) as f32,
+                        WHITE,
+                    );
+                };
             }
             State::Play => {
                 // Display score and high score
