@@ -1,5 +1,4 @@
 use crate::{child::Child, player_state::PlayerState, position::Position, WIDTH};
-use macroquad::rand;
 
 pub trait Row {
     fn y(&self) -> i32;

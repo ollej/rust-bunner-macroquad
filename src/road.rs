@@ -39,12 +39,8 @@ impl Row for Road {
 
         // Create new child objects on a random interval
         if self.timer < 0. {
-            let pos = Position::new(if self.dx < 0 { WIDTH + 70 } else { -70 }, 0);
-            self.children.push(Child::Car(Car::new(self.dx, pos)));
-            // 240 is minimum distance between the start of one child object and the start of the next, assuming its
-            // speed is 1. If the speed is 2, they can occur twice as frequently without risk of overlapping with
-            // each other. The maximum distance is double the minimum distance (1 + random value of 1)
-            self.timer = (1. + rand::gen_range::<f32>(0.0, 1.0)) * (240 / self.dx.abs()) as f32;
+            self.children.push(self.create_random_child(self.dx));
+            self.timer = self.random_interval(self.dx);
         }
 
         if let Some(bunner_pos) = bunner_pos {
@@ -80,10 +76,7 @@ impl Row for Road {
             .get(self.index as usize)
             .unwrap();
         draw_texture(image, x as f32, (y - ROW_HEIGHT) as f32, WHITE);
-
-        for child in self.children() {
-            child.draw(x, y);
-        }
+        self.draw_children(x, y);
     }
 
     fn play_sound(&self) {
