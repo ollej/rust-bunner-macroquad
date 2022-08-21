@@ -164,14 +164,9 @@ impl Grass {
         mask.insert(rand::gen_range(0, 11), HedgeMask::Empty);
 
         let mut new_mask = Vec::with_capacity(12);
-        //debug!("mask: {:?}", mask);
         for i in 0..12 {
             let low_index = 0.max(i as i32 - 1) as usize;
             let high_index = 12.min(i + 1);
-            //debug!(
-            //    "i: {} low_index: {} high_index: {}\nnew_mask: {:?}",
-            //    i, low_index, high_index, new_mask
-            //);
             new_mask.push(
                 if mask[low_index..=high_index]
                     .iter()
