@@ -82,7 +82,7 @@ jobs:
         if: runner.os == 'Windows' || runner.os == 'macOS'
         run: |
           mkdir -p ${{ matrix.config.directory }}/resources
-          cp resources/* ${{ matrix.config.directory }}/resources/
+          cp -R resources ${{ matrix.config.directory }}
           cp target/${{ matrix.config.target }}/release/${{ matrix.config.artifact_name }} ${{ matrix.config.directory }}
           7z a -tzip ${{ matrix.config.zip_file }} ${{ matrix.config.directory }}
       - name: Upload binaries to release
