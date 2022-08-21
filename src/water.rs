@@ -4,8 +4,9 @@ use crate::{
 };
 use macroquad::{
     audio::play_sound_once,
-    prelude::{collections::storage, draw_texture, WHITE},
+    prelude::collections::storage,
     rand::{self},
+    texture::Texture2D,
 };
 
 #[derive(Clone)]
@@ -42,15 +43,11 @@ impl Row for Water {
         }
     }
 
-    fn draw(&self, offset_x: i32, offset_y: i32) {
-        let image = *storage::get::<Resources>()
+    fn image(&self) -> Texture2D {
+        *storage::get::<Resources>()
             .water_textures
             .get(self.index as usize)
-            .unwrap();
-        let x = offset_x;
-        let y = self.y + offset_y;
-        draw_texture(image, x as f32, y as f32 - image.height(), WHITE);
-        self.draw_children(x, y);
+            .unwrap()
     }
 
     fn play_sound(&self) {

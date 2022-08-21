@@ -5,8 +5,9 @@ use crate::{
 };
 use macroquad::{
     audio::play_sound_once,
-    prelude::{collections::storage, draw_texture, WHITE},
+    prelude::collections::storage,
     rand::{self},
+    texture::Texture2D,
 };
 
 #[derive(Clone)]
@@ -31,15 +32,11 @@ impl Row for Grass {
         self.children.as_mut()
     }
 
-    fn draw(&self, offset_x: i32, offset_y: i32) {
-        let image = *storage::get::<Resources>()
+    fn image(&self) -> Texture2D {
+        *storage::get::<Resources>()
             .grass_textures
             .get(self.index as usize)
-            .unwrap();
-        let x = offset_x;
-        let y = self.y + offset_y as i32;
-        draw_texture(image, x as f32, y as f32 - image.height(), WHITE);
-        self.draw_children(x, y);
+            .unwrap()
     }
 
     fn play_sound(&self) {

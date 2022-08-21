@@ -1,8 +1,5 @@
 use crate::{child::Child, resources::Resources, road::Road, row::Row, ROW_HEIGHT};
-use macroquad::{
-    audio::play_sound_once,
-    prelude::{collections::storage, draw_texture, WHITE},
-};
+use macroquad::{audio::play_sound_once, prelude::collections::storage, texture::Texture2D};
 
 #[derive(Clone)]
 pub struct Pavement {
@@ -24,14 +21,11 @@ impl Row for Pavement {
         self.children.as_mut()
     }
 
-    fn draw(&self, offset_x: i32, offset_y: i32) {
-        let image = *storage::get::<Resources>()
+    fn image(&self) -> Texture2D {
+        *storage::get::<Resources>()
             .side_textures
             .get(self.index as usize)
-            .unwrap();
-        let x = offset_x;
-        let y = self.y + offset_y - image.height() as i32;
-        draw_texture(image, x as f32, y as f32, WHITE);
+            .unwrap()
     }
 
     fn play_sound(&self) {

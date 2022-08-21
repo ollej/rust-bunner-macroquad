@@ -6,8 +6,9 @@ use crate::{
 
 use macroquad::{
     audio::play_sound_once,
-    prelude::{collections::storage, draw_texture, WHITE},
+    prelude::collections::storage,
     rand::{self, ChooseRandom},
+    texture::Texture2D,
 };
 
 #[derive(Clone)]
@@ -68,15 +69,11 @@ impl Row for Road {
         }
     }
 
-    fn draw(&self, offset_x: i32, offset_y: i32) {
-        let x = offset_x;
-        let y = self.y + offset_y;
-        let image = *storage::get::<Resources>()
+    fn image(&self) -> Texture2D {
+        *storage::get::<Resources>()
             .road_textures
             .get(self.index as usize)
-            .unwrap();
-        draw_texture(image, x as f32, (y - ROW_HEIGHT) as f32, WHITE);
-        self.draw_children(x, y);
+            .unwrap()
     }
 
     fn play_sound(&self) {
