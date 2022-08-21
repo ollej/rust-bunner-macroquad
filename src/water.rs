@@ -1,6 +1,6 @@
 use crate::{
-    child::Child, dirt::Dirt, log::Log, player_state::PlayerState, position::Position,
-    resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
+    active_row::ActiveRow, child::Child, dirt::Dirt, log::Log, player_state::PlayerState,
+    position::Position, resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
 };
 use macroquad::{
     audio::play_sound_once,
@@ -89,6 +89,12 @@ impl Row for Water {
     }
 }
 
+impl ActiveRow for Water {
+    fn build_child(dx: i32, position: Position) -> Child {
+        Child::Log(Log::new(dx, position))
+    }
+}
+
 impl Water {
     pub fn new(previous_dx: i32, index: i32, y: i32) -> Self {
         let dx = if previous_dx >= 0 {
@@ -96,23 +102,12 @@ impl Water {
         } else {
             rand::gen_range(1, 3)
         };
-        let mut children = Vec::new();
-        let mut x = -WIDTH / 2 - 70;
-        while x < WIDTH / 2 + 70 {
-            x += rand::gen_range::<i32>(240, 481);
-            let pos = if dx > 0 {
-                Position::new(WIDTH / 2 + x, 0)
-            } else {
-                Position::new(WIDTH / 2 - x, 0)
-            };
-            children.push(Child::Log(Log::new(dx, pos)));
-        }
         Self {
             dx,
             timer: 0.,
             index,
             y,
-            children,
+            children: Self::build_children(dx),
         }
     }
 

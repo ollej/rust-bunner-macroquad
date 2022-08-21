@@ -1,3 +1,4 @@
+pub mod active_row;
 pub mod actor;
 pub mod bunner;
 pub mod car;

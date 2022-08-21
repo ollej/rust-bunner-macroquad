@@ -1,7 +1,7 @@
 use crate::{
-    actor::Actor, car::Car, car::CarSound, car::TrafficSound, child::Child, grass::Grass,
-    mover::Mover, pavement::Pavement, player_state::PlayerState, position::Position, rail::Rail,
-    resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
+    active_row::ActiveRow, actor::Actor, car::Car, car::CarSound, car::TrafficSound, child::Child,
+    grass::Grass, mover::Mover, pavement::Pavement, player_state::PlayerState, position::Position,
+    rail::Rail, resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
 };
 
 use macroquad::{
@@ -138,6 +138,12 @@ impl Row for Road {
     }
 }
 
+impl ActiveRow for Road {
+    fn build_child(dx: i32, position: Position) -> Child {
+        Child::Car(Car::new(dx, position))
+    }
+}
+
 impl Road {
     const CAR_SOUNDS: &'static [TrafficSound] = &[
         TrafficSound {
@@ -163,23 +169,12 @@ impl Road {
             .collect::<Vec<&i32>>()
             .choose()
             .unwrap();
-        let mut children = Vec::new();
-        let mut x = -WIDTH / 2 - 70;
-        while x < WIDTH / 2 + 70 {
-            x += rand::gen_range::<i32>(240, 481);
-            let pos = if dx > 0 {
-                Position::new(WIDTH / 2 + x, 0)
-            } else {
-                Position::new(WIDTH / 2 - x, 0)
-            };
-            children.push(Child::Car(Car::new(dx, pos)));
-        }
         Self {
             dx,
             timer: 0.,
             index,
             y,
-            children,
+            children: Self::build_children(dx),
         }
     }
 
