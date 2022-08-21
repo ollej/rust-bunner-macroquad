@@ -17,25 +17,25 @@ jobs:
             artifact_name: bunner-macroquad
             zip_file: bunner-macroquad-linux.tar.gz
             asset_name: bunner-macroquad-linux-$tag.tar.gz
-            directory: bunner-macroquad-${{ github.ref }}
+            directory: bunner-macroquad-${{ github.ref_name }}
             target: 'x86_64-unknown-linux-gnu'
           - os: windows-latest
             artifact_name: bunner-macroquad.exe
             zip_file: bunner-macroquad-windows.zip
             asset_name: bunner-macroquad-windows-$tag.zip
-            directory: bunner-macroquad-${{ github.ref }}
+            directory: bunner-macroquad-${{ github.ref_name }}
             target: 'x86_64-pc-windows-msvc'
           - os: macos-latest
             artifact_name: bunner-macroquad
             zip_file: bunner-macroquad-macos.zip
             asset_name: bunner-macroquad-macos-$tag.zip
-            directory: bunner-macroquad-${{ github.ref }}
+            directory: bunner-macroquad-${{ github.ref_name }}
             target: 'x86_64-apple-darwin'
           - os: ubuntu-latest
             artifact_name: bunner-macroquad.wasm
             zip_file: bunner-macroquad-wasm.zip
             asset_name: bunner-macroquad-wasm-$tag.zip
-            directory: bunner-macroquad-${{ github.ref }}
+            directory: bunner-macroquad-${{ github.ref_name }}
             target: 'wasm32-unknown-unknown'
         include:
           - os: ubuntu-latest
