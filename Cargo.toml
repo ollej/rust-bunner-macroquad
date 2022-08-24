@@ -5,7 +5,7 @@ name = "bunner-macroquad"
 version = "0.1.0"
 
 [dependencies]
-macroquad = "0.3.15"
+macroquad = "0.3.23"
 
 [profile.dev.package.'*']
 opt-level = 3
