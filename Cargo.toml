@@ -2,7 +2,7 @@
 authors = ["Olle Wreede <olle@wreede.se>"]
 edition = "2021"
 name = "bunner-macroquad"
-version = "0.1.0"
+version = "0.3.0"
 
 [dependencies]
 macroquad = "0.3.23"
