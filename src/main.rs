@@ -16,7 +16,7 @@ use macroquad::{
 };
 
 use bunner_macroquad::{
-    global_state::GlobalState, resources::Resources, HEIGHT, TIME_PER_FRAME, TITLE, WIDTH,
+    global_state::GlobalState, resources::Resources, FPS_120, FPS_30, FPS_60, HEIGHT, TITLE, WIDTH,
 };
 
 use std::error;
@@ -41,16 +41,26 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
     global_state.init();
 
     let input_subscriber = register_input_subscriber();
-    let mut frame_time: f32 = 0.;
+    let mut accumulator: f32 = 0.;
     loop {
         if is_key_pressed(KeyCode::Escape) || is_key_pressed(KeyCode::Q) {
             std::process::exit(0);
         }
         repeat_all_miniquad_input(&mut global_state, input_subscriber);
-        frame_time += get_frame_time().min(0.25);
-        while frame_time >= TIME_PER_FRAME {
+        // Snap delta to FPS if close enough
+        let delta = if (get_frame_time() - FPS_120).abs() < 0.0002 {
+            FPS_120
+        } else if (get_frame_time() - FPS_60).abs() < 0.0002 {
+            FPS_60
+        } else if (get_frame_time() - FPS_30).abs() < 0.0002 {
+            FPS_30
+        } else {
+            get_frame_time()
+        };
+        accumulator += delta;
+        while accumulator >= FPS_60 {
             global_state.update();
-            frame_time -= TIME_PER_FRAME;
+            accumulator -= FPS_60;
         }
         global_state.draw();
 
