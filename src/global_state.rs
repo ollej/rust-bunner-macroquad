@@ -12,8 +12,7 @@ use macroquad::{
     color::colors::WHITE,
     experimental::collections::storage,
     input::KeyCode,
-    miniquad::{self},
-    rand::{self},
+    miniquad, rand,
     texture::draw_texture,
 };
 use std::collections::VecDeque;

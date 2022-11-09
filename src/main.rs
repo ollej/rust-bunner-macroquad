@@ -10,7 +10,7 @@
 )]
 
 use macroquad::{
-    audio::{self},
+    audio,
     input::{is_key_pressed, utils::*, KeyCode},
     time::get_frame_time,
     window::{next_frame, Conf},
