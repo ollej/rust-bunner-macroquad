@@ -6,6 +6,7 @@ version = "0.3.0"
 
 [dependencies]
 macroquad = "0.3.25"
+quad-snd = "0.2.5"
 
 [profile.dev.package.'*']
 opt-level = 3
