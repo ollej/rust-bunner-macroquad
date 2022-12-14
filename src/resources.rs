@@ -132,12 +132,12 @@ impl Resources {
         let honk_sounds = load_sounds_list("honk", 4, "wav").await?;
         let jump_sound = audio::load_sound("resources/sounds/jump0.wav").await?;
         let log_sound = audio::load_sound("resources/sounds/log0.wav").await?;
-        let river_sounds = load_sounds_list("river", 2, "ogg").await?;
+        let river_sounds = load_sounds_list("river", 2, "wav").await?;
         let road_sound = audio::load_sound("resources/sounds/road0.wav").await?;
         let sidewalk_sound = audio::load_sound("resources/sounds/sidewalk0.wav").await?;
         let splash_sound = audio::load_sound("resources/sounds/splash0.wav").await?;
         let splat_sound = audio::load_sound("resources/sounds/splat0.wav").await?;
-        let traffic_sounds = load_sounds_list("traffic", 3, "ogg").await?;
+        let traffic_sounds = load_sounds_list("traffic", 3, "wav").await?;
         let train_sounds = load_sounds_list("train", 2, "wav").await?;
         let zoom_sounds = load_sounds_list("zoom", 6, "wav").await?;
 

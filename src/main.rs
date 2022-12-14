@@ -10,7 +10,8 @@
 )]
 
 use macroquad::{
-    audio,
+    audio::{self, Sound},
+    file::FileError,
     input::{is_key_pressed, utils::*, KeyCode},
     time::get_frame_time,
     window::{next_frame, Conf},
@@ -32,12 +33,22 @@ fn window_conf() -> Conf {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
+async fn load_theme() -> Result<Sound, FileError> {
+    audio::load_sound("resources/music/theme.ogg").await
+}
+
+#[cfg(target_arch = "wasm32")]
+async fn load_theme() -> Result<Sound, FileError> {
+    audio::load_sound("resources/music/theme.wav").await
+}
+
 #[macroquad::main(window_conf())]
 async fn main() -> Result<(), Box<dyn error::Error>> {
     Resources::load().await?;
 
     // Start music
-    let music = audio::load_sound("resources/music/theme.ogg").await?;
+    let music = load_theme().await?;
     let mut global_state = GlobalState::new(music);
     global_state.init();
 
