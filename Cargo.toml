@@ -8,7 +8,12 @@ version = "0.4.0"
 macroquad = "0.3.25"
 quad-snd = "0.2.5"
 
+[profile.dev]
+debug = 1 # less precise locations
+
+# Doesn't work with android build
 [profile.dev.package.'*']
+debug = false # no debug symbols for deps
 opt-level = 3
 
 [profile.release]
