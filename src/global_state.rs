@@ -28,17 +28,11 @@ pub struct GlobalState {
 }
 
 impl miniquad::EventHandler for GlobalState {
-    fn update(&mut self, _ctx: &mut miniquad::Context) {}
+    fn update(&mut self) {}
 
-    fn draw(&mut self, _ctx: &mut miniquad::Context) {}
+    fn draw(&mut self) {}
 
-    fn key_down_event(
-        &mut self,
-        _ctx: &mut miniquad::Context,
-        keycode: KeyCode,
-        _keymods: miniquad::KeyMods,
-        repeat: bool,
-    ) {
+    fn key_down_event(&mut self, keycode: KeyCode, _keymods: miniquad::KeyMods, repeat: bool) {
         if !repeat {
             self.input_queue.push_back(keycode);
         }
@@ -60,7 +54,7 @@ impl GlobalState {
     pub fn init(&mut self) {
         rand::srand(macroquad::miniquad::date::now() as u64);
         play_sound(
-            self.music,
+            &self.music,
             PlaySoundParams {
                 looped: true,
                 volume: 1.,
@@ -82,7 +76,7 @@ impl GlobalState {
                     self.state = State::Play;
                     self.game = Game::new(Some(Bunner::new(Position::new(240, -320))));
                     self.input_queue.clear();
-                    set_sound_volume(self.music, 0.3);
+                    set_sound_volume(&self.music, 0.3);
                 } else {
                     self.game.update(self.input_queue.drain(..).collect());
                 }
@@ -106,7 +100,7 @@ impl GlobalState {
                     self.state = State::Menu;
                     self.game = Game::new(None);
                     self.input_queue.clear();
-                    set_sound_volume(self.music, 1.0);
+                    set_sound_volume(&self.music, 1.0);
                 }
             }
         }
@@ -120,11 +114,11 @@ impl GlobalState {
         match self.state {
             State::Menu => {
                 // Draw title screen
-                draw_texture(resources.title_texture, 0., 0., WHITE);
+                draw_texture(&resources.title_texture, 0., 0., WHITE);
                 let index: usize = ((self.game.scroll_pos.abs() / 6) % 4) as usize;
                 if let Some(start_index) = [0, 1, 2, 1].get(index) {
                     draw_texture(
-                        resources.start_textures[*start_index],
+                        &resources.start_textures[*start_index],
                         (WIDTH - 270) as f32 / 2.,
                         (HEIGHT - 240) as f32,
                         WHITE,
@@ -143,7 +137,7 @@ impl GlobalState {
             }
             State::GameOver => {
                 // Display "Game Over" image
-                draw_texture(resources.gameover_texture, 0., 0., WHITE);
+                draw_texture(&resources.gameover_texture, 0., 0., WHITE);
             }
         }
     }

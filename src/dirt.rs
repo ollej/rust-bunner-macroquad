@@ -27,14 +27,15 @@ impl Row for Dirt {
     fn update(&mut self, _scroll_pos: i32, _bunner_pos: Option<Position>) {}
 
     fn image(&self) -> Texture2D {
-        *storage::get::<Resources>()
+        storage::get::<Resources>()
             .dirt_textures
             .get(self.index as usize)
             .unwrap()
+            .to_owned()
     }
 
     fn play_sound(&self) {
-        play_sound_once(storage::get::<Resources>().dirt_sound);
+        play_sound_once(&storage::get::<Resources>().dirt_sound);
     }
 
     fn next(&self) -> Box<dyn Row> {

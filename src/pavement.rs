@@ -22,14 +22,15 @@ impl Row for Pavement {
     }
 
     fn image(&self) -> Texture2D {
-        *storage::get::<Resources>()
+        storage::get::<Resources>()
             .side_textures
             .get(self.index as usize)
             .unwrap()
+            .to_owned()
     }
 
     fn play_sound(&self) {
-        play_sound_once(storage::get::<Resources>().sidewalk_sound);
+        play_sound_once(&storage::get::<Resources>().sidewalk_sound);
     }
 
     fn next(&self) -> Box<dyn Row> {

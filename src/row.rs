@@ -30,7 +30,7 @@ pub trait Row {
         let image = self.image();
         let x = offset_x;
         let y = self.y() + offset_y;
-        draw_texture(image, x as f32, y as f32 - image.height(), WHITE);
+        draw_texture(&image, x as f32, y as f32 - image.height(), WHITE);
         (x, y)
     }
 

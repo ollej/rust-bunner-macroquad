@@ -5,7 +5,7 @@ name = "bunner-macroquad"
 version = "0.4.0"
 
 [dependencies]
-macroquad = "0.3.25"
+macroquad = { version = "0.4", features = ["audio"] }
 quad-snd = "0.2.5"
 
 [profile.dev]

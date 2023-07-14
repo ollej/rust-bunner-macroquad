@@ -13,12 +13,13 @@ impl Actor for Splat {
     fn update(&mut self) {}
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
-        let image = *storage::get::<Resources>()
+        let image = storage::get::<Resources>()
             .splat_textures
             .get(self.direction as usize)
-            .unwrap();
+            .unwrap()
+            .to_owned();
         draw_texture(
-            image,
+            &image,
             (self.position.x + offset_x) as f32 - image.width() / 2.,
             (self.position.y + offset_y) as f32 - image.height(),
             WHITE,

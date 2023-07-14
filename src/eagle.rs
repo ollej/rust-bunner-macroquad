@@ -11,13 +11,13 @@ impl Actor for Eagle {
     }
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
-        let shadow_image = storage::get::<Resources>().eagles_texture;
+        let shadow_image = storage::get::<Resources>().eagles_texture.clone();
         let x = (self.position.x + offset_x) as f32 - shadow_image.width() / 2.;
         let y = (self.position.y + offset_y) as f32 - shadow_image.height();
-        draw_texture(shadow_image, x, y, WHITE);
+        draw_texture(&shadow_image, x, y, WHITE);
 
-        let eagle_image = storage::get::<Resources>().eagle_texture;
-        draw_texture(eagle_image, x, y + 32., WHITE);
+        let eagle_image = storage::get::<Resources>().eagle_texture.clone();
+        draw_texture(&eagle_image, x, y + 32., WHITE);
     }
 
     fn x(&self) -> i32 {

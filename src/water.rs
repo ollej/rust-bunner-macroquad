@@ -44,14 +44,15 @@ impl Row for Water {
     }
 
     fn image(&self) -> Texture2D {
-        *storage::get::<Resources>()
+        storage::get::<Resources>()
             .water_textures
             .get(self.index as usize)
             .unwrap()
+            .to_owned()
     }
 
     fn play_sound(&self) {
-        play_sound_once(storage::get::<Resources>().log_sound);
+        play_sound_once(&storage::get::<Resources>().log_sound);
     }
 
     fn next(&self) -> Box<dyn Row> {

@@ -32,7 +32,7 @@ impl Bunner {
             min_y: position.y,
             direction: PlayerDirection::Down,
             input_queue: VecDeque::new(),
-            image: storage::get::<Resources>().blank_texture,
+            image: storage::get::<Resources>().blank_texture.clone(),
         }
     }
 
@@ -97,10 +97,10 @@ impl Bunner {
                                     Position::new(self.position.x, y_offset),
                                 )),
                             );
-                            play_sound_once(storage::get::<Resources>().splat_sound);
+                            play_sound_once(&storage::get::<Resources>().splat_sound);
                         }
                         PlayerState::Splash => {
-                            play_sound_once(storage::get::<Resources>().splash_sound);
+                            play_sound_once(&storage::get::<Resources>().splash_sound);
                             self.timer = 100;
                         }
                         _ => self.timer = 100,
@@ -108,7 +108,7 @@ impl Bunner {
                 } else if self.position.y > scroll_pos + HEIGHT + 80 {
                     self.state = PlayerState::Eagle(self.position.x);
                     self.timer = 150;
-                    play_sound_once(storage::get::<Resources>().eagle_sound);
+                    play_sound_once(&storage::get::<Resources>().eagle_sound);
                 }
 
                 // Limit x position
@@ -127,15 +127,17 @@ impl Bunner {
         self.image = match self.state {
             PlayerState::Alive => {
                 if self.timer > 0 {
-                    *storage::get::<Resources>()
+                    storage::get::<Resources>()
                         .jump_textures
                         .get(self.direction as usize)
                         .unwrap()
+                        .to_owned()
                 } else {
-                    *storage::get::<Resources>()
+                    storage::get::<Resources>()
                         .sit_textures
                         .get(self.direction as usize)
                         .unwrap()
+                        .to_owned()
                 }
             }
             PlayerState::Splash if self.timer > 84 => {
@@ -145,19 +147,20 @@ impl Bunner {
                 // underneath other objects. Since the player is always drawn on top of other objects, changing the player
                 // sprite is a suitable method of displaying the splash image.
                 let splash_index = ((100 - self.timer) / 2) as usize;
-                *storage::get::<Resources>()
+                storage::get::<Resources>()
                     .splash_textures
                     .get(splash_index)
                     .unwrap()
+                    .to_owned()
             }
-            _ => storage::get::<Resources>().blank_texture,
+            _ => storage::get::<Resources>().blank_texture.clone(),
         };
     }
 
     pub fn draw(&self, offset_x: i32, offset_y: i32) {
         let x = (self.position.x + offset_x) as f32 - self.image.width() / 2.;
         let y = (self.position.y + offset_y) as f32 - self.image.height();
-        draw_texture(self.image, x, y, WHITE);
+        draw_texture(&self.image, x, y, WHITE);
     }
 
     pub fn handle_input(&mut self, direction: Option<PlayerDirection>, rows: &[Box<dyn Row>]) {
@@ -169,7 +172,7 @@ impl Bunner {
                     ) {
                         self.direction = direction;
                         self.timer = Bunner::MOVE_DISTANCE;
-                        play_sound_once(storage::get::<Resources>().jump_sound);
+                        play_sound_once(&storage::get::<Resources>().jump_sound);
                     }
                     break;
                 }

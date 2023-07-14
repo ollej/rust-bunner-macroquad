@@ -118,18 +118,20 @@ impl Game {
 
     fn loop_sound(&mut self, row_sound: RowSound, volume: f32) {
         let sound = match row_sound {
-            RowSound::River => *storage::get::<Resources>()
+            RowSound::River => storage::get::<Resources>()
                 .river_sounds
                 .get(gen_range::<usize>(0, 2))
-                .unwrap(),
-            RowSound::Traffic => *storage::get::<Resources>()
+                .unwrap()
+                .to_owned(),
+            RowSound::Traffic => storage::get::<Resources>()
                 .traffic_sounds
                 .get(gen_range::<usize>(0, 3))
-                .unwrap(),
+                .unwrap()
+                .to_owned(),
         };
         if volume > 0. && self.looped_sounds.insert(row_sound) {
             play_sound(
-                sound,
+                &sound,
                 PlaySoundParams {
                     looped: true,
                     volume,
@@ -139,9 +141,9 @@ impl Game {
 
         if self.looped_sounds.contains(&row_sound) {
             if volume > 0. {
-                set_sound_volume(sound, volume);
+                set_sound_volume(&sound, volume);
             } else {
-                stop_sound(sound);
+                stop_sound(&sound);
                 self.looped_sounds.remove(&row_sound);
             }
         }

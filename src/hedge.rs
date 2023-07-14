@@ -15,13 +15,14 @@ impl Actor for Hedge {
     fn update(&mut self) {}
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
-        let image = *storage::get::<Resources>()
+        let image = storage::get::<Resources>()
             .bush_textures
             .get(self.hedge_tile as usize * 2 + self.hedge_row as usize)
-            .unwrap();
+            .unwrap()
+            .to_owned();
         let x = (self.position.x + offset_x) as f32 - image.width() / 2.;
         let y = (self.position.y + offset_y) as f32 - image.height();
-        draw_texture(image, x as f32, y as f32, WHITE);
+        draw_texture(&image, x as f32, y as f32, WHITE);
     }
 
     fn x(&self) -> i32 {

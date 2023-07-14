@@ -24,7 +24,7 @@ pub fn display_number(number: u32, color: NumberColor, x: i32, align: NumberAlig
             NumberAlign::Left => x + (i as i32 * 25),
         };
         draw_texture(
-            resources.digit_textures[digit_index],
+            &resources.digit_textures[digit_index],
             x_pos as f32,
             0.,
             WHITE,

@@ -26,12 +26,13 @@ impl Actor for Car {
     }
 
     fn draw(&self, offset_x: i32, offset_y: i32) {
-        let image = *storage::get::<Resources>()
+        let image = storage::get::<Resources>()
             .car_textures
             .get(self.image_index)
-            .unwrap();
+            .unwrap()
+            .clone();
         draw_texture(
-            image,
+            &image,
             (self.position.x + offset_x) as f32 - image.width() / 2.,
             (self.position.y + offset_y) as f32 - image.height(),
             WHITE,
@@ -71,11 +72,11 @@ impl Car {
             match sound {
                 CarSound::Zoom => {
                     let rnd = rand::gen_range::<usize>(0, 6);
-                    play_sound_once(storage::get::<Resources>().zoom_sounds[rnd]);
+                    play_sound_once(&storage::get::<Resources>().zoom_sounds[rnd]);
                 }
                 CarSound::Honk => {
                     let rnd = rand::gen_range::<usize>(0, 4);
-                    play_sound_once(storage::get::<Resources>().honk_sounds[rnd]);
+                    play_sound_once(&storage::get::<Resources>().honk_sounds[rnd]);
                 }
             }
         }
