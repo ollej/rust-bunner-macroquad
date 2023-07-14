@@ -57,7 +57,7 @@ checksum = "37ccbd214614c6783386c1af30caf03192f17891059cecc394b4fb119e363de3"
 
 [[package]]
 name = "bunner-macroquad"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "macroquad",
  "quad-snd",
