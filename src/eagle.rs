@@ -1,5 +1,5 @@
 use crate::{actor::Actor, position::Position, resources::Resources};
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
+use macroquad::prelude::{WHITE, collections::storage, draw_texture};
 
 pub struct Eagle {
     position: Position,

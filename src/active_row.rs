@@ -1,4 +1,4 @@
-use crate::{child::Child, position::Position, WIDTH};
+use crate::{WIDTH, child::Child, position::Position};
 use macroquad::rand;
 
 pub trait ActiveRow: Sized {

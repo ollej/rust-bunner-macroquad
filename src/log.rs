@@ -1,6 +1,6 @@
 use crate::{actor::Actor, mover::Mover, position::Position, resources::Resources};
 use macroquad::{
-    prelude::{collections::storage, draw_texture, WHITE},
+    prelude::{WHITE, collections::storage, draw_texture},
     rand::gen_range,
 };
 
@@ -45,11 +45,7 @@ impl Actor for Log {
     }
 
     fn width(&self) -> i32 {
-        if self.image_index == 0 {
-            84
-        } else {
-            138
-        }
+        if self.image_index == 0 { 84 } else { 138 }
     }
 }
 

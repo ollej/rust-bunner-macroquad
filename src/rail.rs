@@ -1,6 +1,6 @@
 use crate::{
-    child::Child, player_state::PlayerState, position::Position, resources::Resources, road::Road,
-    row::Row, train::Train, water::Water, HEIGHT, ROW_HEIGHT, WIDTH,
+    HEIGHT, ROW_HEIGHT, WIDTH, child::Child, player_state::PlayerState, position::Position,
+    resources::Resources, road::Road, row::Row, train::Train, water::Water,
 };
 
 use macroquad::{

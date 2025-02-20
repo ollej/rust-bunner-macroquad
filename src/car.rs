@@ -1,7 +1,7 @@
 use crate::{actor::Actor, mover::Mover, position::Position, resources::Resources};
 use macroquad::{
     audio::play_sound_once,
-    prelude::{collections::storage, draw_texture, WHITE},
+    prelude::{WHITE, collections::storage, draw_texture},
     rand::{self, ChooseRandom},
 };
 use std::collections::HashSet;

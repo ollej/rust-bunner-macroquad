@@ -1,7 +1,7 @@
-use crate::{child::Child, player_state::PlayerState, position::Position, WIDTH};
+use crate::{WIDTH, child::Child, player_state::PlayerState, position::Position};
 use macroquad::{
     color::colors::WHITE,
-    texture::{draw_texture, Texture2D},
+    texture::{Texture2D, draw_texture},
 };
 
 pub trait Row {

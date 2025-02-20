@@ -1,4 +1,4 @@
-use crate::{child::Child, resources::Resources, road::Road, row::Row, ROW_HEIGHT};
+use crate::{ROW_HEIGHT, child::Child, resources::Resources, road::Road, row::Row};
 use macroquad::{audio::play_sound_once, prelude::collections::storage, texture::Texture2D};
 
 #[derive(Clone)]

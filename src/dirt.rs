@@ -1,6 +1,6 @@
 use crate::{
-    child::Child, position::Position, resources::Resources, road::Road, row::Row, water::Water,
-    ROW_HEIGHT,
+    ROW_HEIGHT, child::Child, position::Position, resources::Resources, road::Road, row::Row,
+    water::Water,
 };
 use macroquad::{audio::play_sound_once, prelude::collections::storage, rand, texture::Texture2D};
 

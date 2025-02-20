@@ -1,13 +1,13 @@
 use crate::{
-    child::Child, player_direction::PlayerDirection, player_state::PlayerState, position::Position,
-    resources::Resources, row::Row, splat::Splat, HEIGHT, WIDTH,
+    HEIGHT, WIDTH, child::Child, player_direction::PlayerDirection, player_state::PlayerState,
+    position::Position, resources::Resources, row::Row, splat::Splat,
 };
 use macroquad::{
     audio::play_sound_once,
     color::colors::WHITE,
     experimental::collections::storage,
     input::KeyCode,
-    texture::{draw_texture, Texture2D},
+    texture::{Texture2D, draw_texture},
 };
 use std::collections::VecDeque;
 

@@ -1,6 +1,6 @@
 use crate::{
-    active_row::ActiveRow, child::Child, dirt::Dirt, log::Log, player_state::PlayerState,
-    position::Position, resources::Resources, row::Row, row::RowSound, ROW_HEIGHT, WIDTH,
+    ROW_HEIGHT, WIDTH, active_row::ActiveRow, child::Child, dirt::Dirt, log::Log,
+    player_state::PlayerState, position::Position, resources::Resources, row::Row, row::RowSound,
 };
 use macroquad::{
     audio::play_sound_once,

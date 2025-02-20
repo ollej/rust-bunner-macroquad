@@ -1,14 +1,14 @@
 use crate::{
+    HEIGHT, WIDTH,
     bunner::Bunner,
-    drawing::{display_number, NumberAlign, NumberColor},
+    drawing::{NumberAlign, NumberColor, display_number},
     game::Game,
     position::Position,
     resources::Resources,
     state::State,
-    HEIGHT, WIDTH,
 };
 use macroquad::{
-    audio::{play_sound, set_sound_volume, PlaySoundParams, Sound},
+    audio::{PlaySoundParams, Sound, play_sound, set_sound_volume},
     color::colors::WHITE,
     experimental::collections::storage,
     input::KeyCode,

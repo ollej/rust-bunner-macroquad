@@ -1,8 +1,8 @@
 use crate::{
-    actor::Actor, hedge_row::HedgeRow, hedge_tile::HedgeTile, position::Position,
-    resources::Resources, TILE_WIDTH,
+    TILE_WIDTH, actor::Actor, hedge_row::HedgeRow, hedge_tile::HedgeTile, position::Position,
+    resources::Resources,
 };
-use macroquad::prelude::{collections::storage, draw_texture, WHITE};
+use macroquad::prelude::{WHITE, collections::storage, draw_texture};
 
 #[derive(Clone)]
 pub struct Hedge {

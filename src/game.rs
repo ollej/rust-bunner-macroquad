@@ -1,10 +1,10 @@
 use crate::{
-    actor::Actor, bunner::Bunner, eagle::Eagle, grass::Grass, player_state::PlayerState,
-    position::Position, resources::Resources, row::Row, row::RowSound, HEIGHT, ROW_HEIGHT,
+    HEIGHT, ROW_HEIGHT, actor::Actor, bunner::Bunner, eagle::Eagle, grass::Grass,
+    player_state::PlayerState, position::Position, resources::Resources, row::Row, row::RowSound,
 };
 use macroquad::{
-    audio::{play_sound, set_sound_volume, stop_sound, PlaySoundParams},
-    prelude::{clear_background, collections::storage, KeyCode, BLACK},
+    audio::{PlaySoundParams, play_sound, set_sound_volume, stop_sound},
+    prelude::{BLACK, KeyCode, clear_background, collections::storage},
     rand::gen_range,
 };
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -30,13 +30,16 @@ impl Game {
     }
 
     pub fn update(&mut self, input_queue: VecDeque<KeyCode>) {
-        if let Some(bunner) = &self.bunner {
-            // Scroll faster if the player is close to the top of the screen. Limit scroll speed to
-            // between 1 and 3 pixels per frame.
-            self.scroll_pos -=
-                1.max(3.min(self.scroll_pos + HEIGHT - bunner.position.y) / (HEIGHT / 4));
-        } else {
-            self.scroll_pos -= 1;
+        match &self.bunner {
+            Some(bunner) => {
+                // Scroll faster if the player is close to the top of the screen. Limit scroll speed to
+                // between 1 and 3 pixels per frame.
+                self.scroll_pos -=
+                    1.max(3.min(self.scroll_pos + HEIGHT - bunner.position.y) / (HEIGHT / 4));
+            }
+            _ => {
+                self.scroll_pos -= 1;
+            }
         }
 
         // Remove rows that have scrolled past the bottom of the screen.
@@ -101,18 +104,16 @@ impl Game {
     }
 
     pub fn game_over(&self) -> bool {
-        if let Some(bunner) = &self.bunner {
-            bunner.state != PlayerState::Alive && bunner.timer < 0
-        } else {
-            false
+        match &self.bunner {
+            Some(bunner) => bunner.state != PlayerState::Alive && bunner.timer < 0,
+            _ => false,
         }
     }
 
     pub fn score(&self) -> u32 {
-        if let Some(bunner) = &self.bunner {
-            0.max((-320 - bunner.min_y as i32) / 40) as u32
-        } else {
-            0
+        match &self.bunner {
+            Some(bunner) => 0.max((-320 - bunner.min_y as i32) / 40) as u32,
+            _ => 0,
         }
     }
 

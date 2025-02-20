@@ -11,13 +11,13 @@
 
 use macroquad::{
     audio::{self, Sound},
-    input::{is_key_pressed, utils::*, KeyCode},
+    input::{KeyCode, is_key_pressed, utils::*},
     time::get_frame_time,
-    window::{next_frame, Conf},
+    window::{Conf, next_frame},
 };
 
 use bunner_macroquad::{
-    global_state::GlobalState, resources::Resources, FPS_120, FPS_30, FPS_60, HEIGHT, TITLE, WIDTH,
+    FPS_30, FPS_60, FPS_120, HEIGHT, TITLE, WIDTH, global_state::GlobalState, resources::Resources,
 };
 
 use std::error;

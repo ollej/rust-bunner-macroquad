@@ -2,8 +2,8 @@
 // The file naming actually helps, since "map" textures don't have an index.
 
 use macroquad::{
-    audio::{self, load_sound, Sound},
-    prelude::{collections::storage, coroutines::start_coroutine, load_texture, Texture2D, *},
+    audio::{self, Sound, load_sound},
+    prelude::{Texture2D, collections::storage, coroutines::start_coroutine, load_texture, *},
 };
 use std::error;
 
